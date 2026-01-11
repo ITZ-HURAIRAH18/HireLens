@@ -1,10 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, UploadFile, File
+from app.services.resume_parser import extract_resume_text
 
 router = APIRouter()
 
 
 @router.post("/upload")
-def upload_resume():
+async def upload_resume(file: UploadFile = File(...)):
+    resume_text = extract_resume_text(file)
+
     return {
-        "message": "Resume upload endpoint (coming next)"
+        "filename": file.filename,
+        "characters": len(resume_text),
+        "resume_text": resume_text
     }
