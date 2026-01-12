@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.agents.resume_chat_agent import chat_with_resume_agent
-
+from app.state.session_store import SESSION_STORE
 router = APIRouter()
 
-# In-memory session storage (shared with resume.py)
-SESSION_STORE = {}
+
 
 
 class ChatRequest(BaseModel):
@@ -26,7 +25,6 @@ def chat_with_resume(request: ChatRequest):
         user_message=request.message
     )
 
-    # save history
     session["chat_history"].append({"role": "user", "content": request.message})
     session["chat_history"].append({"role": "assistant", "content": reply})
 

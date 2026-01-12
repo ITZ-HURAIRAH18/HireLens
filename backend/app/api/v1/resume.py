@@ -48,11 +48,10 @@ async def analyze_resume_with_agent(resume_data: dict):
     return result["output"]
 
 
+
+
 @router.post("/upload-and-analyze")
 async def upload_and_analyze_resume(file: UploadFile = File(...)):
-    """
-    Upload a resume, parse it, and analyze it via agent in a single call.
-    """
     if not file.filename.endswith((".pdf", ".docx")):
         raise HTTPException(status_code=400, detail="Only PDF or DOCX allowed")
 
@@ -61,30 +60,25 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
         file_path = tmp.name
 
     try:
-        # 1️⃣ Extract raw text
-        if file.filename.endswith(".pdf"):
-            resume_text = extract_text_from_pdf(file_path)
-        else:
-            resume_text = extract_text_from_docx(file_path)
+        resume_text = (
+            extract_text_from_pdf(file_path)
+            if file.filename.endswith(".pdf")
+            else extract_text_from_docx(file_path)
+        )
 
-        # 2️⃣ Parse resume for structured display / storage
-        structured_resume = parse_resume_text(resume_text)
-
-        # 3️⃣ Send raw text to agent
+        parsed_resume = parse_resume_text(resume_text)
         agent_result = resume_agent.invoke({"resume_text": resume_text})
+
         session_id = str(uuid.uuid4())
         SESSION_STORE[session_id] = {
-        "analysis": agent_result["output"].dict(),
-        "chat_history": []
+            "analysis": agent_result["output"].dict(),
+            "chat_history": []
         }
 
-        # 4️⃣ Return combined response
         return {
             "message": "Resume uploaded & analyzed successfully",
             "session_id": session_id,
-
-   
-            "parsed_resume": structured_resume,
+            "parsed_resume": parsed_resume,
             "ai_analysis": agent_result["output"]
         }
 
