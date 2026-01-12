@@ -1,23 +1,20 @@
 from langgraph.graph import StateGraph, END
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from typing import TypedDict
-
 from app.schemas.agent import ResumeAgentOutput
+from app.core.config import settings
 
-
-llm = ChatOpenAI(
-    "gemini-2.5-flash",
-    temperature=0.3
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0.3,
+    google_api_key=settings.google_api_key
 )
-
 
 class ResumeState(TypedDict):
     resume_text: str
     output: ResumeAgentOutput
 
-
 # -------- Nodes -------- #
-
 def summarize_resume(state: ResumeState):
     prompt = f"""
 Summarize the following resume professionally:
@@ -51,14 +48,10 @@ Resume:
         )
     }
 
-
 # -------- Graph -------- #
-
 graph = StateGraph(ResumeState)
-
 graph.add_node("summarize", summarize_resume)
 graph.add_node("analyze", analyze_resume)
-
 graph.set_entry_point("summarize")
 graph.add_edge("summarize", "analyze")
 graph.add_edge("analyze", END)

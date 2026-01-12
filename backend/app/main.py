@@ -5,7 +5,7 @@ from app.api.v1.router import api_router
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title=settings.APP_NAME,
+        title=settings.app_name,
         version="1.0.0",
         description="Production-level Agentic AI Resume Checker Backend"
     )
@@ -16,3 +16,4 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+# poetry run uvicorn app.main:app --reload

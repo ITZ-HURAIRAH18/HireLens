@@ -1,12 +1,14 @@
-from pydantic_settings import BaseSettings
-
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Hire Lens Resume Checker"
-    DEBUG: bool = True
+    app_name: str = "Hire Lens Backend"
+    environment: str = "development"
+    openai_api_key: str | None = None
+    google_api_key: str
 
-    class Config:
-        env_file = ".env"
-
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="forbid"
+    )
 
 settings = Settings()
