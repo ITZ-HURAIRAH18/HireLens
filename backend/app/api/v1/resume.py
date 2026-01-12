@@ -46,3 +46,40 @@ async def analyze_resume_with_agent(resume_data: dict):
         "resume_text": str(resume_data)
     })
     return result["output"]
+
+
+
+
+
+@router.post("/upload-and-analyze")
+async def upload_and_analyze_resume(file: UploadFile = File(...)):
+    if not file.filename.endswith((".pdf", ".docx")):
+        raise HTTPException(status_code=400, detail="Only PDF or DOCX allowed")
+
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        tmp.write(await file.read())
+        file_path = tmp.name
+
+    try:
+        # 1️⃣ Extract raw text
+        if file.filename.endswith(".pdf"):
+            resume_text = extract_text_from_pdf(file_path)
+        else:
+            resume_text = extract_text_from_docx(file_path)
+
+        # 2️⃣ Parse resume (for UI / storage)
+        structured_resume = parse_resume_text(resume_text)
+
+        # 3️⃣ Send RAW TEXT to agent (BEST PRACTICE)
+        agent_result = resume_agent.invoke({
+            "resume_text": resume_text
+        })
+  # 4️⃣ Return combined response
+        return {
+            "message": "Resume uploaded & analyzed successfully",
+            "parsed_resume": structured_resume,
+            "ai_analysis": agent_result["output"]
+        }
+
+    finally:
+        os.remove(file_path)
