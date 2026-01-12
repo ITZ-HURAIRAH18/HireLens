@@ -1,42 +1,87 @@
+import json
+import tempfile
+import os
+from typing import TypedDict
+
+from fastapi import APIRouter, UploadFile, File, HTTPException
+
 from langgraph.graph import StateGraph, END
 from langchain_google_genai import ChatGoogleGenerativeAI
-from typing import TypedDict
+
+from app.schemas.resume import ResumeResponse
 from app.schemas.agent import ResumeAgentOutput
+from app.services.resume_parser import extract_text_from_pdf, extract_text_from_docx, parse_resume_text
 from app.core.config import settings
 
+router = APIRouter(prefix="/resume", tags=["Resume"])
+
+# ---------------- LLM ---------------- #
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0.3,
-    google_api_key=settings.google_api_key
+    google_api_key=settings.google_api_key,
 )
 
+# ---------------- State ---------------- #
 class ResumeState(TypedDict):
     resume_text: str
     summary: str
     output: ResumeAgentOutput
 
 
+# ---------------- Nodes ---------------- #
 def summarize_resume(state: ResumeState):
-    summary = llm.invoke(
-        f"Summarize the following resume:\n{state['resume_text']}"
-    ).content
+    prompt = f"""
+Summarize the following resume in 3–4 professional lines:
+
+{state['resume_text']}
+"""
+    summary = llm.invoke(prompt).content.strip()
     return {"summary": summary}
 
 
 def analyze_resume(state: ResumeState):
-    llm.invoke(f"Analyze resume:\n{state['resume_text']}")
+    prompt = f"""
+Analyze the resume below and return ONLY valid JSON
+(no markdown, no explanation).
+
+Required JSON format:
+{{
+  "strengths": [string],
+  "weaknesses": [string],
+  "improvement_tips": [string],
+  "suggested_roles": [string],
+  "ats_score": int
+}}
+
+Resume:
+{state['resume_text']}
+"""
+
+    response = llm.invoke(prompt).content.strip()
+
+    # Remove markdown code fences if present
+    if response.startswith("```"):
+        response = response.replace("```json", "").replace("```", "").strip()
+
+    try:
+        data = json.loads(response)
+    except json.JSONDecodeError:
+        raise ValueError(f"Invalid JSON from LLM:\n{response}")
 
     return {
         "output": ResumeAgentOutput(
-            summary=state["summary"],
-            strengths=["Strong technical background"],
-            weaknesses=["Needs clearer impact metrics"],
-            improvement_tips=["Add measurable achievements"],
-            suggested_roles=["Backend Developer", "AI Engineer"]
+            summary=state.get("summary", ""),
+            strengths=data.get("strengths", []),
+            weaknesses=data.get("weaknesses", []),
+            improvement_tips=data.get("improvement_tips", []),
+            suggested_roles=data.get("suggested_roles", []),
+            ats_score=data.get("ats_score", 0),  # default to 0 if missing
         )
     }
 
 
+# ---------------- Graph ---------------- #
 graph = StateGraph(ResumeState)
 graph.add_node("summarize", summarize_resume)
 graph.add_node("analyze", analyze_resume)

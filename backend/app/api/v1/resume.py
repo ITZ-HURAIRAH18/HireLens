@@ -28,31 +28,29 @@ async def upload_resume(file: UploadFile = File(...)):
             text = extract_text_from_docx(file_path)
 
         structured_resume = parse_resume_text(text)
-
-        return {
-            "message": "Resume parsed successfully",
-            "data": structured_resume
-        }
+        return {"message": "Resume parsed successfully", "data": structured_resume}
 
     finally:
         os.remove(file_path)
 
 
-
-
 @router.post("/analyze")
 async def analyze_resume_with_agent(resume_data: dict):
-    result = resume_agent.invoke({
-        "resume_text": str(resume_data)
-    })
+    """
+    Send raw resume text to agent for analysis.
+    """
+    if "resume_text" not in resume_data:
+        raise HTTPException(status_code=400, detail="resume_text key is required")
+
+    result = resume_agent.invoke({"resume_text": resume_data["resume_text"]})
     return result["output"]
-
-
-
 
 
 @router.post("/upload-and-analyze")
 async def upload_and_analyze_resume(file: UploadFile = File(...)):
+    """
+    Upload a resume, parse it, and analyze it via agent in a single call.
+    """
     if not file.filename.endswith((".pdf", ".docx")):
         raise HTTPException(status_code=400, detail="Only PDF or DOCX allowed")
 
@@ -67,14 +65,13 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
         else:
             resume_text = extract_text_from_docx(file_path)
 
-        # 2️⃣ Parse resume (for UI / storage)
+        # 2️⃣ Parse resume for structured display / storage
         structured_resume = parse_resume_text(resume_text)
 
-        # 3️⃣ Send RAW TEXT to agent (BEST PRACTICE)
-        agent_result = resume_agent.invoke({
-            "resume_text": resume_text
-        })
-  # 4️⃣ Return combined response
+        # 3️⃣ Send raw text to agent
+        agent_result = resume_agent.invoke({"resume_text": resume_text})
+
+        # 4️⃣ Return combined response
         return {
             "message": "Resume uploaded & analyzed successfully",
             "parsed_resume": structured_resume,
