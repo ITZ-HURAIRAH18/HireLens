@@ -1,6 +1,8 @@
+from app.api.v1.chat import SESSION_STORE
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import tempfile
 import os
+import uuid
 
 from app.services.resume_parser import (
     extract_text_from_pdf,
@@ -70,10 +72,18 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
 
         # 3️⃣ Send raw text to agent
         agent_result = resume_agent.invoke({"resume_text": resume_text})
+        session_id = str(uuid.uuid4())
+        SESSION_STORE[session_id] = {
+        "analysis": agent_result["output"].dict(),
+        "chat_history": []
+        }
 
         # 4️⃣ Return combined response
         return {
             "message": "Resume uploaded & analyzed successfully",
+            "session_id": session_id,
+
+   
             "parsed_resume": structured_resume,
             "ai_analysis": agent_result["output"]
         }
