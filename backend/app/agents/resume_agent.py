@@ -12,31 +12,19 @@ llm = ChatGoogleGenerativeAI(
 
 class ResumeState(TypedDict):
     resume_text: str
+    summary: str
     output: ResumeAgentOutput
 
-# -------- Nodes -------- #
-def summarize_resume(state: ResumeState):
-    prompt = f"""
-Summarize the following resume professionally:
 
-{state['resume_text']}
-"""
-    summary = llm.invoke(prompt).content
+def summarize_resume(state: ResumeState):
+    summary = llm.invoke(
+        f"Summarize the following resume:\n{state['resume_text']}"
+    ).content
     return {"summary": summary}
 
 
 def analyze_resume(state: ResumeState):
-    prompt = f"""
-Analyze this resume and provide:
-- strengths
-- weaknesses
-- suggested job roles
-- improvement tips
-
-Resume:
-{state['resume_text']}
-"""
-    response = llm.invoke(prompt).content
+    llm.invoke(f"Analyze resume:\n{state['resume_text']}")
 
     return {
         "output": ResumeAgentOutput(
@@ -48,7 +36,7 @@ Resume:
         )
     }
 
-# -------- Graph -------- #
+
 graph = StateGraph(ResumeState)
 graph.add_node("summarize", summarize_resume)
 graph.add_node("analyze", analyze_resume)
