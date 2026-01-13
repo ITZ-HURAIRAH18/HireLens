@@ -20,9 +20,9 @@ def extract_text_from_docx(file_path: str) -> str:
 def parse_resume_text(text: str) -> ResumeSections:
     lines = [l.strip() for l in text.split("\n") if l.strip()]
 
+    name = lines[0] if lines else None
     email = next((l for l in lines if "@" in l), None)
     phone = next((l for l in lines if re.search(r"\+?\d{10,13}", l)), None)
-    name = lines[0] if lines else None
 
     skills, experience, education, projects = [], [], [], []
     current_section = None
@@ -33,30 +33,33 @@ def parse_resume_text(text: str) -> ResumeSections:
         if "skill" in lower:
             current_section = "skills"
             continue
-        if "experience" in lower:
+        elif "experience" in lower:
             current_section = "experience"
             continue
-        if "education" in lower:
+        elif "education" in lower:
             current_section = "education"
             continue
-        if "project" in lower:
+        elif "project" in lower:
             current_section = "projects"
             continue
 
         if current_section == "skills":
-            skills.append(line)
-        elif current_section == "experience":
-            experience.append(line)
-        elif current_section == "education":
+            skills.extend([s.strip() for s in line.split(",") if len(s) < 30])
+
+        elif current_section == "education" and len(education) < 3:
             education.append(line)
-        elif current_section == "projects":
-            projects.append(line)
+
+        elif current_section == "experience" and len(experience) < 3:
+            experience.append(line)
+
+        elif current_section == "projects" and len(projects) < 5:
+            projects.append(line.split("—")[0].strip())
 
     return ResumeSections(
         name=name,
         email=email,
         phone=phone,
-        skills=skills,
+        skills=list(set(skills))[:10],
         experience=experience,
         education=education,
         projects=projects

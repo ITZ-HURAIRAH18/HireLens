@@ -42,11 +42,16 @@ Summarize the following resume in 3–4 professional lines:
 
 def analyze_resume(state: ResumeState):
     prompt = f"""
-Analyze the resume below and return ONLY valid JSON
-(no markdown, no explanation).
+Analyze the resume and return ONLY valid JSON.
 
-Required JSON format:
+Rules:
+- Max 5 words per bullet
+- Max 3 items per list
+- Be concise
+
+JSON format:
 {{
+  "summary": "one line only",
   "strengths": [string],
   "weaknesses": [string],
   "improvement_tips": [string],
