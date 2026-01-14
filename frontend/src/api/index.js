@@ -14,7 +14,7 @@ export const uploadAndAnalyzeResume = (file) => {
 };
 
 export const chatWithResume = (sessionId, message) => {
-  return API.post("/chat/", {
+  return API.post("/resume/chat/", {
     session_id: sessionId,
     message: message,
   });

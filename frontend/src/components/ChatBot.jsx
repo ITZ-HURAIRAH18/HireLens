@@ -85,6 +85,8 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
 
     try {
       const { data } = await uploadAndAnalyzeResume(fileToUpload);
+      console.log('API Response:', data);
+      console.log('AI Analysis:', data.ai_analysis);
 
       // ✅ save session + analysis
       onSessionStart({
@@ -117,7 +119,6 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
     }
   };
 
-  const score = Number(msg.content.score ?? 0);
   const sendMessage = async (e) => {
     e?.preventDefault();
     if (!message.trim() || loading) return;
@@ -248,10 +249,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
                   <div className="chatbot__score-bar">
                     <div
                       className="chatbot__score-fill"
-
-
-                      style={{ width: `${Math.min(Math.max(score, 0), 100)}%` }}
-
+                      style={{ width: `${Math.min(Math.max(Number(msg.content.score || 0), 0), 100)}%` }}
                     ></div>
                   </div>
                 </div>

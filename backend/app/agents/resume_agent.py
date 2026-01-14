@@ -72,12 +72,12 @@ Resume:
 
     return {
         "output": ResumeAgentOutput(
-            summary=data["summary"],
-            strengths=data["strengths"],
-            weaknesses=data["weaknesses"],
-            improvement_tips=data["improvement_tips"],
-            suggested_roles=data["suggested_roles"],
-            ats_score=int(data["ats_score"]),
+            summary=state.get("summary", data.get("summary", "")),
+            strengths=data.get("strengths", []),
+            weaknesses=data.get("weaknesses", []),
+            improvement_tips=data.get("improvement_tips", []),
+            suggested_roles=data.get("suggested_roles", []),
+            ats_score=int(data.get("ats_score", 0)),
         )
     }
 
