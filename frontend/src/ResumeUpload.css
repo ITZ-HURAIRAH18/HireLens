@@ -1,0 +1,73 @@
+.ru {
+  --ru-bg: #ffffff;
+  --ru-surface: #f5f5f5;
+  --ru-primary: #0d6efd;
+  --ru-error: #dc3545;
+  --ru-text: #212529;
+  --ru-radius: 10px;
+  --ru-max-width: 420px;
+  font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  max-width: var(--ru-max-width);
+  margin: auto;
+  padding: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ru {
+    --ru-bg: #121212;
+    --ru-surface: #1e1e1e;
+    --ru-primary: #3f8bff;
+    --ru-text: #e9ecef;
+  }
+}
+
+.ru__drop {
+  border: 2px dashed var(--ru-primary);
+  border-radius: var(--ru-radius);
+  padding: 2rem 1rem;
+  text-align: center;
+  background: var(--ru-surface);
+  transition: border-color 0.2s;
+}
+.ru__drop--error { border-color: var(--ru-error); }
+
+.ru__input { display: none; }
+
+.ru__label {
+  color: var(--ru-primary);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ru__err {
+  color: var(--ru-error);
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.ru__btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.65rem;
+  border: none;
+  border-radius: var(--ru-radius);
+  background: var(--ru-primary);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.ru__btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.ru__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ru-spin 0.6s linear infinite;
+}
+@keyframes ru-spin { to { transform: rotate(360deg); } }
