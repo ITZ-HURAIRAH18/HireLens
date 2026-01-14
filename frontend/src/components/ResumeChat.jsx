@@ -142,7 +142,7 @@ export default function ResumeChat() {
       <header className="chat-header">
         <div className="chat-header-content">
           <span className="chat-header-icon">🤖</span>
-          <h1>AI Resume Assistant</h1>
+          <h1>Hire Lens Resume Assistant</h1>
         </div>
       </header>
 
