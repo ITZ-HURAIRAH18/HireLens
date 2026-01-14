@@ -11,17 +11,21 @@ def create_app() -> FastAPI:
         description="Production-level Agentic AI Resume Checker Backend"
     )
 
+    # Configure CORS with regex pattern for Vercel deployments
+    # This regex allows:
+    # - localhost with any port (for local development)
+    # - All *.vercel.app domains (for Vercel deployments including preview branches)
+    cors_regex = r"https://.*\.vercel\.app|http://localhost(:\d+)?"
+    
     # Configure CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "https://hire-lensz.vercel.app"
-        ],
+        allow_origin_regex=cors_regex,
         allow_credentials=True,
-        allow_methods=["*"],  # Allows all methods
-        allow_headers=["*"],  # Allows all headers
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+        allow_headers=["*"],
+        expose_headers=["*"],
+        max_age=3600,
     )
 
     app.include_router(api_router, prefix="/api/v1")
