@@ -47,16 +47,16 @@ Analyze the resume and return ONLY valid JSON.
 Rules:
 - Max 5 words per bullet
 - Max 3 items per list
-- Be concise
+- ATS score between 0 and 100
 
 JSON format:
 {{
-  "summary": "one line only",
+  "summary": "one line",
   "strengths": [string],
   "weaknesses": [string],
   "improvement_tips": [string],
   "suggested_roles": [string],
-  "ats_score": int
+  "ats_score": number
 }}
 
 Resume:
@@ -65,23 +65,19 @@ Resume:
 
     response = llm.invoke(prompt).content.strip()
 
-    # Remove markdown code fences if present
     if response.startswith("```"):
         response = response.replace("```json", "").replace("```", "").strip()
 
-    try:
-        data = json.loads(response)
-    except json.JSONDecodeError:
-        raise ValueError(f"Invalid JSON from LLM:\n{response}")
+    data = json.loads(response)
 
     return {
         "output": ResumeAgentOutput(
-            summary=state.get("summary", ""),
-            strengths=data.get("strengths", []),
-            weaknesses=data.get("weaknesses", []),
-            improvement_tips=data.get("improvement_tips", []),
-            suggested_roles=data.get("suggested_roles", []),
-            ats_score=data.get("ats_score", 0),  # default to 0 if missing
+            summary=data["summary"],
+            strengths=data["strengths"],
+            weaknesses=data["weaknesses"],
+            improvement_tips=data["improvement_tips"],
+            suggested_roles=data["suggested_roles"],
+            ats_score=int(data["ats_score"]),
         )
     }
 

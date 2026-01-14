@@ -8,13 +8,13 @@ export const uploadAndAnalyzeResume = (file) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  return API.post("/resume/resume/upload-and-analyze", formData, {
+  return API.post("/resume/upload-and-analyze", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
 export const chatWithResume = (sessionId, message) => {
-  return API.post("/resume/chat/", {
+  return API.post("/chat/", {
     session_id: sessionId,
     message: message,
   });

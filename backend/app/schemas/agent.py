@@ -1,10 +1,10 @@
 from pydantic import BaseModel
-from typing import List
 
 
 class ResumeAgentOutput(BaseModel):
     summary: str
-    strengths: List[str]
-    weaknesses: List[str]
-    improvement_tips: List[str]
-    suggested_roles: List[str]
+    strengths: list[str]
+    weaknesses: list[str]
+    improvement_tips: list[str]
+    suggested_roles: list[str]
+    ats_score: int

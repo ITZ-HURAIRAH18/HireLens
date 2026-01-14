@@ -1,3 +1,4 @@
+from unittest import result
 from app.api.v1.chat import SESSION_STORE
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import tempfile
@@ -11,7 +12,7 @@ from app.services.resume_parser import (
 )
 from app.schemas.resume import ResumeResponse
 from app.agents.resume_agent import resume_agent
-router = APIRouter(prefix="/resume", tags=["Resume"])
+router = APIRouter(tags=["Resume"])
 
 
 @router.post("/upload", response_model=ResumeResponse)
@@ -79,8 +80,7 @@ async def upload_and_analyze_resume(file: UploadFile = File(...)):
             "message": "Resume uploaded & analyzed successfully",
             "session_id": session_id,
             "parsed_resume": parsed_resume,
-            "ai_analysis": agent_result["output"]
+            "ai_analysis": agent_result["output"].dict()
         }
-
     finally:
         os.remove(file_path)

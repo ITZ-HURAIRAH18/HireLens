@@ -1,20 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { chatWithResume, uploadAndAnalyzeResume } from '../api';
+import '../ChatBot.css';
 
 const MAX_BYTES = 2 * 1024 * 1024; // 2 MB
 
 export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) {
   /* ---------- state ---------- */
-  const [message, setMessage]   = useState('');
-  const [chat, setChat]         = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState(null);
-  const [file, setFile]         = useState(null);
+  const [message, setMessage] = useState('');
+  const [chat, setChat] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [file, setFile] = useState(null);
   const [uploadError, setUploadError] = useState('');
   const [uploading, setUploading] = useState(false);
 
   const bottomRef = useRef(null);
-  const inputRef  = useRef(null);
+  const inputRef = useRef(null);
   const fileInputRef = useRef(null);
 
   /* ---------- effects ---------- */
@@ -28,15 +29,15 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
     inputRef.current?.focus();
   }, []);
 
-  // Add initial analysis to chat if available
+
   useEffect(() => {
     if (initialAnalysis && chat.length === 0) {
       const welcomeMsg = {
         role: 'assistant',
         content: {
           type: 'analysis',
-          score: initialAnalysis.ats_score,
-          summary: initialAnalysis.summary
+          score: initialAnalysis.analysis.ats_score,
+          summary: initialAnalysis.analysis.summary
         },
         isAnalysis: true
       };
@@ -76,40 +77,47 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
 
     setUploading(true);
     setUploadError('');
-    
-    // Add upload message to chat
-    const uploadMsg = {
-      role: 'user',
-      content: `📎 Uploading resume: ${fileToUpload.name}`,
-      isUpload: true
-    };
-    setChat((prev) => [...prev, uploadMsg]);
+
+    setChat((prev) => [
+      ...prev,
+      { role: 'user', content: `📎 ${fileToUpload.name}`, isUpload: true }
+    ]);
 
     try {
       const { data } = await uploadAndAnalyzeResume(fileToUpload);
-      onSessionStart(data);
-      
-      // Add analysis result to chat
-      const analysisMsg = {
-        role: 'assistant',
-        content: {
-          type: 'analysis',
-          score: data.ai_analysis.ats_score,
-          summary: data.ai_analysis.summary
-        },
-        isAnalysis: true
-      };
-      setChat((prev) => [...prev, analysisMsg]);
+
+      // ✅ save session + analysis
+      onSessionStart({
+        session_id: data.session_id,
+        analysis: data.ai_analysis
+      });
+
+      // ✅ USE API RESPONSE DIRECTLY
+      setChat((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: {
+            type: 'analysis',
+            score: data.ai_analysis.ats_score,
+            summary: data.ai_analysis.summary
+          },
+          isAnalysis: true
+        }
+      ]);
+
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
+
     } catch (err) {
-      setUploadError(err?.response?.data?.message || 'Upload failed. Try again.');
-      setChat((prev) => prev.slice(0, -1)); // Remove upload message
+      setUploadError(err?.response?.data?.message || 'Upload failed');
+      setChat((prev) => prev.slice(0, -1));
     } finally {
       setUploading(false);
     }
   };
 
+  const score = Number(msg.content.score ?? 0);
   const sendMessage = async (e) => {
     e?.preventDefault();
     if (!message.trim() || loading) return;
@@ -124,7 +132,10 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
 
     try {
       const { data } = await chatWithResume(sessionId, userMsg.content);
-      setChat(data.chat_history);
+      if (Array.isArray(data.chat_history)) {
+        setChat(data.chat_history);
+      }
+
     } catch (err) {
       setChat((prev) => prev.slice(0, -1)); // rollback
       setError(err?.message || 'Chat error. Try again.');
@@ -136,7 +147,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
   /* ---------- formatting helpers ---------- */
   const formatMessage = (text) => {
     if (!text) return null;
-    
+
     return text.split('\n').map((line, i) => {
       // Handle bold text
       const parts = line.split(/(\*\*.*?\*\*)/g);
@@ -146,7 +157,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
         }
         return part;
       });
-      
+
       return (
         <span key={i}>
           {formatted}
@@ -158,10 +169,10 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
 
   const formatSummary = (summary) => {
     if (!summary) return null;
-    
+
     // Split into paragraphs
     const paragraphs = summary.split('\n\n').filter(p => p.trim());
-    
+
     return paragraphs.map((para, i) => (
       <p key={i} className="chatbot__paragraph">
         {para.split('\n').map((line, j) => (
@@ -192,14 +203,14 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
             <div className="chatbot__welcome-icon">🤖</div>
             <h3 className="chatbot__welcome-title">Welcome to AI Resume Assistant!</h3>
             <p className="chatbot__welcome-text">
-              {sessionId 
-                ? "Ask me anything about your résumé." 
+              {sessionId
+                ? "Ask me anything about your résumé."
                 : "Upload your resume to get started. I'll analyze it and help you improve it!"}
             </p>
             {!sessionId && (
               <div className="chatbot__upload-prompt">
-                <button 
-                  onClick={() => fileInputRef.current?.click()} 
+                <button
+                  onClick={() => fileInputRef.current?.click()}
                   className="chatbot__upload-btn"
                   disabled={uploading}
                 >
@@ -227,7 +238,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
                   <span className="chatbot__success-icon">✅</span>
                   <h3>Resume Analysis Complete</h3>
                 </div>
-                
+
                 <div className="chatbot__ats-score">
                   <div className="chatbot__score-label">ATS Score</div>
                   <div className="chatbot__score-value">
@@ -235,9 +246,12 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
                     <span className="chatbot__score-max">/100</span>
                   </div>
                   <div className="chatbot__score-bar">
-                    <div 
-                      className="chatbot__score-fill" 
-                      style={{width: `${msg.content.score || 0}%`}}
+                    <div
+                      className="chatbot__score-fill"
+
+
+                      style={{ width: `${Math.min(Math.max(score, 0), 100)}%` }}
+
                     ></div>
                   </div>
                 </div>
@@ -289,7 +303,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
           className="chatbot__file-input"
           disabled={uploading}
         />
-        
+
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
@@ -309,7 +323,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
           className="chatbot__input"
           disabled={loading || !sessionId || uploading}
         />
-        
+
         <button
           type="submit"
           disabled={loading || !message.trim() || !sessionId || uploading}
@@ -344,14 +358,14 @@ const SendIcon = () => (
 
 const AttachIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
   </svg>
 );
 
 const UploadIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-    <polyline points="17 8 12 3 7 8"/>
-    <line x1="12" y1="3" x2="12" y2="15"/>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
   </svg>
 );
