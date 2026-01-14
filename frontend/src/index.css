@@ -1,1 +1,30 @@
-@import "tailwindcss";
+.app {
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial;
+}
+
+.chat-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.messages {
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.user-msg {
+  text-align: right;
+  background: #daf1ff;
+  padding: 6px;
+  margin: 4px;
+}
+
+.bot-msg {
+  text-align: left;
+  background: #f0f0f0;
+  padding: 6px;
+  margin: 4px;
+}
