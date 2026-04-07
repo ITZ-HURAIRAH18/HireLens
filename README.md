@@ -1,4 +1,4 @@
-"# HireLens 🎯
+ HireLens 🎯
 
 > AI-Powered Resume Analysis and Career Advisory Platform
 
@@ -253,13 +253,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 👥 Authors
 
-Built with ❤️ by the HireLens team
+Built with ❤️ by the M Abu Hurairah
 
 ## 🙏 Acknowledgments
 
