@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════
+   Analysis Results — Resume card, scores, bars
+   ═══════════════════════════════════════════ */
+
+.analysis-results {
+  background: var(--bg);
+  padding: 32px 40px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ── Section Label ── */
+.section-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ghost);
+  margin-bottom: 20px;
+}
+
+/* ── Resume Card ── */
+.resume-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+}
+
+.resume-card:hover {
+  border-color: var(--border2);
+}
+
+/* ── Top Row ── */
+.resume-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.resume-card-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--surface3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--dim);
+}
+
+.file-icon svg {
+  stroke: var(--dim);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.file-meta {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 2px;
+}
+
+.analyzed-badge {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 50px;
+  padding: 4px 12px;
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ── Scores Row ── */
+.scores-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.score-card {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  transition: border-color 0.15s;
+  border: 1px solid transparent;
+}
+
+.score-card:hover {
+  border-color: var(--border2);
+}
+
+.score-number {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--accent);
+  display: block;
+}
+
+.score-label {
+  font-size: 10px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 3px;
+  display: block;
+}
+
+/* ── Progress Bars ── */
+.progress-bars {
+  margin-top: 16px;
+}
+
+.progress-item {
+  margin-bottom: 12px;
+}
+
+.progress-item:last-child {
+  margin-bottom: 0;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+
+.progress-value {
+  color: var(--subtle) !important;
+}
+
+.progress-track {
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 0;
+  animation: growBar 0.8s ease forwards;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .analysis-results {
+    padding: 24px 20px;
+  }
+
+  .scores-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .score-number {
+    font-size: 22px;
+  }
+
+  .resume-card {
+    padding: 18px;
+  }
+
+  .resume-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}

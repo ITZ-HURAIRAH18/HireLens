@@ -1,0 +1,391 @@
+Redesign the entire HireLens Resume Assistant UI to be 
+industrial-grade professional. This is a dark-themed, 
+editorial AI tool — not a generic SaaS app.
+
+════════════════════════════════════
+DESIGN SYSTEM
+════════════════════════════════════
+
+FONTS (add to index.html or index.css):
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap');
+
+CSS VARIABLES (:root):
+--bg:       #0f0f0f;
+--surface:  #141414;
+--surface2: #161616;
+--surface3: #1e1e1e;
+--border:   #1e1e1e;
+--border2:  #2a2a2a;
+--text:     #f0ede8;
+--muted:    #c8c5bf;
+--subtle:   #888888;
+--dim:      #444444;
+--ghost:    #333333;
+--accent:   #e8c547;
+--accent-bg:#1a1a00;
+--accent-border:#2e2e00;
+--font-serif: 'Instrument Serif', serif;
+--font-sans:  'Geist', sans-serif;
+--radius-sm: 6px;
+--radius-md: 8px;
+--radius-lg: 12px;
+--radius-xl: 16px;
+
+GLOBAL RULES:
+- body: background var(--bg), color var(--text), 
+  font-family var(--font-sans)
+- ALL display headings: font-family var(--font-serif), 
+  letter-spacing -1px, color var(--text)
+- NO white backgrounds anywhere
+- NO red accent color (replace all red with #e8c547)
+- NO rounded pill buttons on main CTAs (use radius 8px)
+- NO generic dark grays — use the exact hex values above
+- Primary accent: #e8c547 (warm gold/yellow)
+- All borders: 1px solid var(--border) or var(--border2)
+- Cards: background var(--surface), border var(--border)
+
+════════════════════════════════════
+COMPONENT: NAVBAR
+════════════════════════════════════
+height: 56px
+background: var(--surface2)
+border-bottom: 1px solid var(--border2)
+padding: 0 32px
+display: flex, align-items: center, justify-content: space-between
+
+Left — Logo:
+  "Hire" in font-family var(--font-serif), font-size 19px, 
+  color var(--text)
+  "Lens" same but color var(--accent) #e8c547
+  No robot emoji, no icon
+
+Right — Links + CTA:
+  "How it works" and "Examples" text links: 12px, 
+  color var(--dim), no underline, hover color var(--subtle)
+  Gap: 20px between links
+  "Get started" button: background var(--accent), 
+  color #0f0f0f, border-radius var(--radius-sm), 
+  padding 7px 16px, font-size 12px, font-weight 500, 
+  font-family var(--font-sans), no border, cursor pointer
+
+════════════════════════════════════
+PAGE: UPLOAD / HOME
+════════════════════════════════════
+Full page background: var(--bg)
+Content centered, padding: 80px 40px 60px, text-align: center
+
+1. EYEBROW TAG (above title):
+   display: inline-flex, align-items: center, gap: 8px
+   background: var(--surface3)
+   border: 1px solid var(--border2)
+   border-radius: 50px
+   padding: 5px 14px
+   font-size: 11px, color: var(--subtle), 
+   letter-spacing: 1px, text-transform: uppercase
+   Contains: animated dot (5x5px, background #e8c547, 
+   border-radius 50%, CSS pulse animation: 
+   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} })
+   Text: "AI-powered resume analysis"
+   margin-bottom: 28px
+
+2. HERO TITLE:
+   font-family: var(--font-serif)
+   font-size: 52px, line-height: 1.1
+   letter-spacing: -1.5px, color: var(--text)
+   Two lines: "Your resume," on line 1,
+   "<em>decoded.</em>" on line 2
+   em: font-style italic, color: var(--accent)
+   margin-bottom: 14px
+
+3. HERO SUBTITLE:
+   font-size: 14px, color: var(--dim), font-weight: 300
+   max-width: 420px, margin: 0 auto 40px
+   line-height: 1.7
+   Text: "Upload your resume and get instant AI feedback, 
+   ATS scoring, and a personal career coach."
+
+4. DROPZONE:
+   background: var(--surface)
+   border: 1.5px dashed #2e2e2e
+   border-radius: var(--radius-xl)
+   max-width: 520px, margin: 0 auto 20px
+   padding: 48px 32px
+   display: flex, flex-direction: column
+   align-items: center, gap: 16px
+   cursor: pointer
+   transition: border-color 0.2s, background 0.2s
+   
+   Hover state:
+     border-color: var(--accent)
+     background: #161400
+
+   Inside (top to bottom):
+   a) Icon box: 52x52px, background var(--surface3),
+      border: 1px solid var(--border2), border-radius: 12px,
+      centered, contains upload SVG icon 
+      (stroke: var(--dim), stroke-width: 1.5, fill: none)
+      SVG path: cloud upload or arrow-up icon
+   
+   b) "Drop your resume here" — font-family var(--font-serif), 
+      16px, color var(--muted)
+   
+   c) "or click to browse files" — 12px, color var(--dim),
+      letter-spacing: 0.3px
+   
+   d) "Choose file" button: background var(--accent), 
+      color #0f0f0f, border-radius var(--radius-md),
+      padding: 10px 24px, font-size: 13px, 
+      font-weight: 500, no border, margin-top: 4px
+   
+   e) "PDF · DOCX · Max 2MB" — 11px, color var(--ghost),
+      letter-spacing: 0.5px
+
+5. OR DIVIDER:
+   max-width: 520px, margin: 0 auto 20px
+   display: flex, align-items: center, gap: 12px
+   Two lines: flex 1, height 1px, background #1e1e1e
+   Center text: "OR", 11px, color var(--ghost), 
+   letter-spacing: 1px
+
+6. LINKEDIN URL ROW:
+   display: flex, gap: 10px
+   max-width: 520px, margin: 0 auto
+   
+   Input: flex 1, background var(--surface), 
+   border: 1px solid #222, border-radius var(--radius-md),
+   height: 42px, padding: 0 14px, font-size: 13px,
+   color var(--muted), font-family var(--font-sans),
+   outline: none
+   Focus: border-color var(--accent)
+   Placeholder: "Paste LinkedIn URL…", color: var(--ghost)
+   
+   "Analyze" button: background var(--surface3),
+   color var(--subtle), border: 1px solid var(--border2),
+   border-radius var(--radius-md), padding: 0 18px,
+   height: 42px, font-size: 12px, cursor: pointer
+
+7. FEATURE PILLS ROW:
+   display: grid, grid-template-columns: repeat(3, 1fr)
+   gap: 10px, max-width: 520px, margin: 40px auto 0
+   
+   Each feature card:
+     background: var(--surface)
+     border: 1px solid var(--border)
+     border-radius: 10px, padding: 14px
+     display: flex, align-items: center, gap: 10px
+     
+     Icon box: 30x30px, background var(--accent-bg),
+     border-radius: 7px, contains SVG icon,
+     stroke: var(--accent), fill: none, stroke-width: 2,
+     icon size 14x14px
+     
+     Text wrapper:
+       Title: 12px, color var(--subtle), font-weight: 500,
+       display: block, margin-bottom: 2px
+       Subtitle: 11px, color var(--dim), line-height: 1.4
+   
+   Feature 1: Waveform/chart icon — "ATS Score" / "Pass filters"
+   Feature 2: Info/alert icon — "Gap Analysis" / "Missing keywords"  
+   Feature 3: Chat bubble icon — "AI Coach" / "Ask anything"
+
+════════════════════════════════════
+PAGE: ANALYSIS RESULTS (after upload)
+════════════════════════════════════
+Horizontal divider: height 1px, background #1a1a1a
+
+Content: background var(--bg), padding: 32px 40px
+max-width: 680px (or full width is fine too)
+
+SECTION LABEL:
+font-size: 10px, letter-spacing: 1.5px, 
+text-transform: uppercase, color: var(--ghost)
+margin-bottom: 20px
+
+RESUME CARD:
+background: var(--surface), border: 1px solid var(--border),
+border-radius: var(--radius-lg), padding: 24px
+margin-bottom: 16px
+
+  Top row (flex, space-between, align-items: center):
+    Left: icon box (38x38px, background var(--surface3), 
+    border-radius: 8px, file SVG icon stroke var(--dim))
+    + text block: 
+      filename: 14px, color var(--muted), font-weight: 500
+      meta: 11px, color var(--dim), margin-top: 2px
+    Right: "Analyzed" badge:
+      background: var(--accent-bg)
+      border: 1px solid var(--accent-border)
+      border-radius: 50px, padding: 4px 12px
+      font-size: 10px, color: var(--accent)
+      letter-spacing: 0.5px
+
+  Scores row (3-column grid, gap: 10px, margin: 16px 0):
+    Each score card: background: var(--bg),
+    border-radius: 8px, padding: 12px, text-align: center
+      Number: font-family var(--font-serif), 28px, 
+      color: var(--accent)
+      Label: 10px, color var(--dim), text-transform: uppercase,
+      letter-spacing: 0.8px, margin-top: 3px
+    Scores: "74 / ATS Score", "68 / Clarity", "82 / Impact"
+
+  Progress bars section:
+    For each metric:
+      Row: flex, space-between, font-size: 11px,
+      color var(--dim), margin-bottom: 6px
+      Left: metric name, Right: percentage (color var(--subtle))
+      Bar track: height 4px, background #1a1a1a, 
+      border-radius: 2px, margin-bottom: 12px
+      Bar fill: height 4px, background var(--accent),
+      border-radius: 2px, width = percentage%
+      Animate width from 0 on mount: 0.8s ease forwards
+    
+    Metrics: "Skills match" 74%, "Experience depth" 68%, 
+    "Format quality" 91%
+
+════════════════════════════════════
+COMPONENT: AI CHAT (below analysis)
+════════════════════════════════════
+Container: background: #111, border: 1px solid var(--border),
+border-radius: var(--radius-lg), overflow: hidden
+
+CHAT HEADER:
+background: var(--surface2), 
+border-bottom: 1px solid var(--border)
+padding: 12px 16px, display: flex, align-items: center, gap: 8px
+
+  Avatar: 24x24px, background var(--accent-bg), 
+  border-radius: 50%, brain/robot SVG icon 12px, 
+  stroke: var(--accent)
+  Title: "Resume Coach", 12px, color var(--subtle), 
+  font-weight: 500
+  Status (margin-left auto): flex row, gap: 5px,
+  green dot (5x5px, background #3a9a3a, border-radius 50%),
+  "Online" text 10px color #3a7a3a
+
+MESSAGES AREA: padding: 16px
+
+  AI message bubble:
+    background: var(--surface2)
+    border: 1px solid var(--border)
+    border-radius: 10px 10px 10px 3px
+    padding: 10px 14px, max-width: 85%
+    font-size: 12px, color: var(--subtle), line-height: 1.6
+    margin-bottom: 10px
+    Strong tags: color var(--muted), font-weight: 500
+  
+  User message bubble:
+    background: var(--accent-bg)
+    border: 1px solid var(--accent-border)
+    border-radius: 10px 10px 3px 10px
+    padding: 10px 14px, max-width: 85%
+    margin-left: auto, margin-bottom: 10px
+    font-size: 12px, color: #b8a840, line-height: 1.6
+
+SUGGESTION CHIPS:
+display: flex, gap: 8px, padding: 0 16px 12px, flex-wrap: wrap
+Each chip: background var(--surface2), 
+border: 1px solid #222, border-radius: 50px,
+padding: 5px 12px, font-size: 11px, color var(--dim),
+cursor: pointer
+Hover: border-color var(--border2), color var(--subtle)
+Chips: "Fix formatting issues" | "Rewrite my summary" | 
+       "Tailor for job description" | "What's my weakest section"
+
+CHAT INPUT ROW:
+border-top: 1px solid var(--border), padding: 12px 16px,
+display: flex, gap: 10px, align-items: center
+
+  Input: flex 1, background var(--bg), 
+  border: 1px solid #222, border-radius: var(--radius-md),
+  height: 36px, padding: 0 12px, font-size: 12px,
+  color var(--subtle), font-family var(--font-sans),
+  outline: none
+  Focus: border-color var(--accent)
+  Placeholder: "Ask anything about your resume…"
+  
+  Send button: 32x32px, background var(--accent), 
+  border: none, border-radius: 7px, cursor: pointer,
+  display: flex, align-items: center, justify-content: center
+  Contains send/arrow SVG: 13x13px, 
+  stroke: #0f0f0f, fill: none, stroke-width: 2.5
+  Hover: background #d4b23a (slightly darker accent)
+
+When input is empty: send button opacity 0.4, 
+cursor: not-allowed
+
+════════════════════════════════════
+ANIMATIONS
+════════════════════════════════════
+
+/* Eyebrow pulse dot */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* Page entrance */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Progress bar grow */
+@keyframes growBar {
+  from { width: 0; }
+  to { width: var(--w); }
+}
+
+Apply fadeUp to: eyebrow, title, subtitle, dropzone, features
+Use animation-delay: 0s, 0.08s, 0.16s, 0.24s, 0.32s, 0.4s
+
+Apply growBar to progress bar fills on mount: 0.8s ease forwards
+Set CSS var: style={{ '--w': percentage + '%' }}
+
+Dropzone drag-over state (when file is dragged over):
+  border-color: var(--accent)
+  background: #161400
+  Scale the upload icon slightly: transform scale(1.1)
+
+Card hover (score cards, feature cards): 
+  border-color: var(--border2), transition 0.15s
+
+════════════════════════════════════
+JAVASCRIPT BEHAVIOR
+════════════════════════════════════
+
+1. File upload:
+   - Click anywhere on dropzone → trigger hidden file input
+   - Drag and drop support: add dragover/drop events
+   - On file select: show filename + size in dropzone, 
+     replace upload UI with "Analyzing…" loading state:
+       Spinner: 20px rotating border animation, 
+       border 2px solid #2a2a2a, 
+       border-top-color var(--accent)
+   - After analysis (mock 2s delay): 
+     fade in the results section below
+
+2. Chat:
+   - Enter key submits message
+   - New user message appends a bubble immediately
+   - AI "thinking" state: show 3 animated dots 
+     (each dot: 4px circle, var(--accent), 
+     bounce animation with delay)
+   - Suggestion chips: clicking inserts text into input
+   - Auto-scroll to bottom on new message
+
+3. LinkedIn URL:
+   - Validate URL on "Analyze" click
+   - Show same loading → results flow as file upload
+
+════════════════════════════════════
+WHAT NEVER TO DO
+════════════════════════════════════
+- No red buttons (the current red #dc2626 — replace ALL with var(--accent))
+- No white or light backgrounds
+- No Inter, Roboto, or system-ui fonts
+- No emoji anywhere in the UI
+- No purple gradients
+- No box-shadow glow effects
+- No pill-shaped main CTA buttons (use radius 8px)
+- No generic "AI" aesthetics — this should feel editorial and precise
+- Don't change any backend/API logic — UI only
