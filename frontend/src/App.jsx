@@ -1,143 +1,77 @@
 import { useState, useCallback } from "react";
-import Navbar from "./components/Navbar";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./components/layout/MainLayout";
 import UploadPage from "./components/UploadPage";
 import AnalysisResults from "./components/AnalysisResults";
-import AIChat from "./components/AIChat";
-import { uploadAndAnalyzeResume, chatWithResume } from "./api";
+import Dashboard from "./components/Dashboard";
+import AISuggestions from "./components/AISuggestions";
+import History from "./components/History";
+import Compare from "./components/Compare";
+import Settings from "./components/Settings";
+import Auth from "./components/Auth";
+import { useAuth } from "./lib/auth";
+import { uploadAndAnalyzeResume } from "./api";
 
-export default function App() {
-  const [appState, setAppState] = useState("upload"); // "upload" | "analyzing" | "results"
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+}
+
+function PublicRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Loading...</div>;
+  if (user) return <Navigate to="/" replace />;
+  return children;
+}
+
+function AppRoutes() {
   const [analysisData, setAnalysisData] = useState(null);
   const [fileName, setFileName] = useState("");
   const [fileSize, setFileSize] = useState(0);
   const [sessionId, setSessionId] = useState(null);
-  const [chatMessages, setChatMessages] = useState([]);
+  const { user } = useAuth();
 
   const handleFileAnalyzed = useCallback(async (file) => {
     setFileName(file.name);
     setFileSize(file.size);
-    setAppState("analyzing");
-
     try {
       const { data } = await uploadAndAnalyzeResume(file);
-
-      setSessionId(data.session_id);
       setAnalysisData(data.ai_analysis);
-
-      // Initialize chat with analysis summary
-      if (data.ai_analysis?.summary) {
-        setChatMessages([
-          {
-            role: "assistant",
-            content: data.ai_analysis.summary,
-          },
-        ]);
-      }
-
-      // Simulate brief loading then show results
-      setTimeout(() => setAppState("results"), 800);
+      setSessionId(data.session_id);
     } catch (error) {
       console.error("Upload error:", error);
-      // Still show results with mock data for demo
-      setAnalysisData({
-        ats_score: 74,
-        clarity_score: 68,
-        impact_score: 82,
-        summary: "Your resume has been analyzed. There are some areas for improvement, particularly in keyword optimization and formatting consistency.",
-      });
-      setSessionId("demo-session");
-      setChatMessages([
-        {
-          role: "assistant",
-          content: "Your resume has been analyzed. There are some areas for improvement, particularly in keyword optimization and formatting consistency.",
-        },
-      ]);
-      setTimeout(() => setAppState("results"), 800);
+      setAnalysisData(null);
     }
-  }, []);
-
-  const handleLinkedinAnalyzed = useCallback((url) => {
-    // LinkedIn URL validation flow — same loading pattern
-    setFileName("LinkedIn Profile Analysis");
-    setFileSize(0);
-    setAppState("analyzing");
-
-    // Mock LinkedIn analysis
-    setTimeout(() => {
-      setAnalysisData({
-        ats_score: 62,
-        clarity_score: 71,
-        impact_score: 58,
-        summary: "Your LinkedIn profile has been analyzed. Consider adding more quantifiable achievements and expanding your skills section.",
-      });
-      setSessionId("linkedin-session");
-      setChatMessages([
-        {
-          role: "assistant",
-          content: "Your LinkedIn profile has been analyzed. Consider adding more quantifiable achievements and expanding your skills section.",
-        },
-      ]);
-      setAppState("results");
-    }, 1500);
-  }, []);
-
-  const handleSendMessage = useCallback(async (sid, message) => {
-    if (!sid || sid.startsWith("demo") || sid.startsWith("linkedin")) {
-      // Mock response for demo
-      return "I've reviewed your resume. Here are my top recommendations: focus on quantifiable achievements, ensure consistent formatting, and tailor your summary to the target role.";
-    }
-
-    try {
-      const { data } = await chatWithResume(sid, message);
-      return data.reply || data.message || "I've analyzed your resume. What would you like to know?";
-    } catch (error) {
-      console.error("Chat error:", error);
-      return "Sorry, there was an error processing your message. Please try again.";
-    }
-  }, []);
-
-  const handleGetStarted = useCallback(() => {
-    // Scroll to upload section or reset state
-    setAppState("upload");
-    setAnalysisData(null);
-    setChatMessages([]);
-    setSessionId(null);
   }, []);
 
   return (
-    <>
-      <Navbar onGetStarted={handleGetStarted} />
-
-      {appState === "upload" && (
-        <UploadPage
-          onFileAnalyzed={handleFileAnalyzed}
-          onLinkedinAnalyzed={handleLinkedinAnalyzed}
-        />
-      )}
-
-      {appState === "analyzing" && (
-        <div className="analyzing-state">
-          <div className="analyzing-spinner"></div>
-          <p>Analyzing your resume&hellip;</p>
-        </div>
-      )}
-
-      {appState === "results" && analysisData && (
-        <div className="results-state">
-          <AnalysisResults
-            analysis={analysisData}
-            fileName={fileName}
-            fileSize={fileSize}
-          />
-          <div style={{ height: 24 }} />
-          <AIChat
-            sessionId={sessionId}
-            onSendMessage={handleSendMessage}
-            initialMessages={chatMessages}
-          />
-          <div style={{ height: 40 }} />
-        </div>
-      )}
-    </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<PublicRoute><Auth mode="login" /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Auth mode="register" /></PublicRoute>} />
+        <Route path="/*" element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<UploadPage onFileAnalyzed={handleFileAnalyzed} />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/analysis" element={
+                  analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : <div className="text-center py-20 text-slate-400">Upload a resume first.</div>
+                } />
+                <Route path="/suggestions" element={<AISuggestions sessionId={sessionId} />} />
+                <Route path="/compare" element={<Compare />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </MainLayout>
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Router>
   );
 }
+
+export default AppRoutes;

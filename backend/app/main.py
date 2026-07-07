@@ -1,26 +1,29 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
+from app.core.database import engine, Base
 from app.api.v1.router import api_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
 
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.app_name,
-        version="1.0.0",
-        description="Production-level Agentic AI Resume Checker Backend"
+        version="2.0.0",
+        description="Production-level Multi-Agent AI Career Platform Backend",
+        lifespan=lifespan,
     )
 
-    # Configure CORS with regex pattern for Vercel deployments
-    # This regex allows:
-    # - localhost with any port (for local development)
-    # - All *.vercel.app domains (for Vercel deployments including preview branches)
-    cors_regex = r"https://.*\.vercel\.app|http://localhost(:\d+)?"
-    
-    # Configure CORS
+    cors_origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=cors_regex,
+        allow_origins=cors_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
         allow_headers=["*"],
@@ -34,4 +37,6 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-# poetry run uvicorn app.main:app --reload
+
+# Run with: uvicorn app.main:app --reload
+# Or: python run.py

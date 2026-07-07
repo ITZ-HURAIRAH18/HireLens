@@ -1,0 +1,82 @@
+.score-dashboard {
+  background: var(--bg);
+  padding: 0 40px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ghost);
+  margin-bottom: 20px;
+}
+
+.scores-radial {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.radial-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  transition: border-color 0.15s;
+}
+
+.radial-card:hover {
+  border-color: var(--border2);
+}
+
+.radial-chart {
+  width: 72px;
+  height: 72px;
+}
+
+.radial-bg {
+  fill: none;
+  stroke: #1e1e1e;
+  stroke-width: 2.8;
+}
+
+.radial-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.8s ease;
+}
+
+.radial-text {
+  fill: var(--text);
+  font-family: var(--font-serif);
+  font-size: 7px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.radial-label {
+  font-size: 11px;
+  color: var(--subtle);
+  font-weight: 500;
+}
+
+.radial-desc {
+  font-size: 10px;
+  color: var(--dim);
+}
+
+@media (max-width: 600px) {
+  .score-dashboard { padding: 0 20px; }
+  .scores-radial { gap: 10px; }
+  .radial-card { min-width: 100px; padding: 16px; }
+}

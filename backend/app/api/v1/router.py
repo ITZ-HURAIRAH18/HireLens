@@ -1,24 +1,14 @@
 from fastapi import APIRouter
-from app.api.v1 import health, resume, chat
-from fastapi import APIRouter, HTTPException
-from typing import Dict, List
-from app.agents.resume_chat_agent import chat_with_resume_agent
+from app.api.v1 import health, resume, chat, agent, auth, export, stream, subscriptions, dashboard
+
 api_router = APIRouter()
 
-api_router.include_router(
-    health.router,
-    prefix="/health",
-    tags=["Health"]
-)
-
-api_router.include_router(
-    resume.router,
-    prefix="/resume",
-    tags=["Resume"]
-)
-
-api_router.include_router(
-    chat.router,
-    prefix="/resume/chat", 
-    tags=["Resume Chat"]
-)
+api_router.include_router(health.router, prefix="/health", tags=["Health"])
+api_router.include_router(resume.router, prefix="/resume", tags=["Resume"])
+api_router.include_router(chat.router, prefix="/resume/chat", tags=["Resume Chat"])
+api_router.include_router(agent.router, tags=["Agent"])
+api_router.include_router(auth.router, tags=["Auth"])
+api_router.include_router(export.router, tags=["Export"])
+api_router.include_router(stream.router, tags=["Streaming"])
+api_router.include_router(subscriptions.router, tags=["Subscriptions"])
+api_router.include_router(dashboard.router, tags=["Dashboard"])

@@ -8,10 +8,21 @@ const SUGGESTION_CHIPS = [
   "What's my weakest section",
 ];
 
+const AGENT_LABELS = {
+  analyze: "Resume Analyst",
+  chat: "ResumeCoach",
+  job_match: "Job Matcher",
+  ats: "ATS Checker",
+  cover_letter: "Cover Letter Writer",
+  interview: "Interview Coach",
+  career_path: "Career Advisor",
+};
+
 export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState(initialMessages || []);
   const [isThinking, setIsThinking] = useState(false);
+  const [activeAgent, setActiveAgent] = useState("chat");
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -41,7 +52,11 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
         const reply = await onSendMessage(sessionId, userText);
         setMessages((prev) => [
           ...prev,
-          { role: "assistant", content: reply || "I've analyzed your resume. What would you like to know?" },
+          {
+            role: "assistant",
+            content: reply || "I've analyzed your resume. What would you like to know?",
+            agent: activeAgent,
+          },
         ]);
       } catch {
         setMessages((prev) => [
@@ -66,9 +81,12 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
     }
   };
 
+  const getAgentName = (agent) => {
+    return AGENT_LABELS[agent] || AGENT_LABELS.chat;
+  };
+
   return (
     <div className="ai-chat">
-      {/* Chat Header */}
       <div className="chat-header">
         <div className="chat-avatar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -76,14 +94,13 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
             <circle cx="12" cy="9" r="2.5" />
           </svg>
         </div>
-        <span className="chat-title">ResumeCoach</span>
+        <span className="chat-title">{getAgentName(activeAgent)}</span>
         <div className="chat-status">
           <span className="status-dot"></span>
           <span className="status-text">Online</span>
         </div>
       </div>
 
-      {/* Messages Area */}
       <div className="chat-messages">
         {messages.map((msg, i) => (
           <div
@@ -91,23 +108,28 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
             className={`msg-bubble-wrapper msg-bubble-wrapper--${msg.role}`}
           >
             {msg.role === "assistant" ? (
-              <div className="msg-ai">
-                {typeof msg.content === "string"
-                  ? msg.content.split("\n").map((line, j) => {
-                      const boldParts = line.split(/(\*\*.*?\*\*)/g);
-                      return (
-                        <span key={j}>
-                          {boldParts.map((part, k) => {
-                            if (part.startsWith("**") && part.endsWith("**")) {
-                              return <strong key={k}>{part.slice(2, -2)}</strong>;
-                            }
-                            return <span key={k}>{part}</span>;
-                          })}
-                          {j < line.split("\n").length - 1 && <br />}
-                        </span>
-                      );
-                    })
-                  : msg.content}
+              <div>
+                {msg.agent && (
+                  <div className="msg-agent-label">{getAgentName(msg.agent)}</div>
+                )}
+                <div className="msg-ai">
+                  {typeof msg.content === "string"
+                    ? msg.content.split("\n").map((line, j) => {
+                        const boldParts = line.split(/(\*\*.*?\*\*)/g);
+                        return (
+                          <span key={j}>
+                            {boldParts.map((part, k) => {
+                              if (part.startsWith("**") && part.endsWith("**")) {
+                                return <strong key={k}>{part.slice(2, -2)}</strong>;
+                              }
+                              return <span key={k}>{part}</span>;
+                            })}
+                            {j < line.split("\n").length - 1 && <br />}
+                          </span>
+                        );
+                      })
+                    : msg.content}
+                </div>
               </div>
             ) : (
               <div className="msg-user">{msg.content}</div>
@@ -128,7 +150,6 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggestion Chips */}
       <div className="suggestion-chips">
         {SUGGESTION_CHIPS.map((chip) => (
           <button
@@ -141,7 +162,6 @@ export default function AIChat({ sessionId, onSendMessage, initialMessages }) {
         ))}
       </div>
 
-      {/* Chat Input Row */}
       <div className="chat-input-row">
         <input
           ref={inputRef}
