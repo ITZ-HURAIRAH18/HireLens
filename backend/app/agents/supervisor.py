@@ -8,6 +8,7 @@ from app.agents.ats_agent import ats_optimization_node
 from app.agents.cover_letter_agent import cover_letter_node
 from app.agents.interview_agent import interview_prep_node, mock_interview_node
 from app.agents.career_path_agent import career_path_node
+from app.agents.resume_enhance_agent import enhance_resume_node
 
 
 def router_node(state: AgentState) -> AgentState:
@@ -17,12 +18,12 @@ def router_node(state: AgentState) -> AgentState:
 
 def should_continue(state: AgentState) -> Literal[
     "analyze", "chat", "job_match", "ats", "cover_letter",
-    "interview_prep", "mock_interview", "career_path", "__end__"
+    "interview_prep", "mock_interview", "career_path", "enhance", "__end__"
 ]:
     agent = state.get("active_agent", "analyze")
     valid_agents = [
         "analyze", "chat", "job_match", "ats", "cover_letter",
-        "interview_prep", "mock_interview", "career_path"
+        "interview_prep", "mock_interview", "career_path", "enhance"
     ]
     return agent if agent in valid_agents else "__end__"
 
@@ -39,6 +40,7 @@ def build_supervisor():
     graph.add_node("interview_prep", interview_prep_node)
     graph.add_node("mock_interview", mock_interview_node)
     graph.add_node("career_path", career_path_node)
+    graph.add_node("enhance", enhance_resume_node)
 
     graph.set_entry_point("router")
     graph.add_conditional_edges(
@@ -53,11 +55,12 @@ def build_supervisor():
             "interview_prep": "interview_prep",
             "mock_interview": "mock_interview",
             "career_path": "career_path",
+            "enhance": "enhance",
             "__end__": END,
         },
     )
 
-    for agent in ["analyze", "chat", "job_match", "ats", "cover_letter", "interview_prep", "mock_interview", "career_path"]:
+    for agent in ["analyze", "chat", "job_match", "ats", "cover_letter", "interview_prep", "mock_interview", "career_path", "enhance"]:
         graph.add_edge(agent, END)
 
     return graph.compile()

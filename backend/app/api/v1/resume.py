@@ -3,6 +3,9 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 import tempfile
 import os
 import uuid
+from typing import List, Optional
+from datetime import datetime
+from pydantic import BaseModel
 
 from app.api.v1.chat import SESSION_STORE
 from app.services.resume_parser import (
@@ -19,7 +22,36 @@ from app.models.resume import Resume
 from app.models.analysis import AnalysisResult
 from sqlalchemy.orm import Session
 
+
+class ResumeListItem(BaseModel):
+    id: str
+    filename: str
+    resume_text: str
+    created_at: Optional[datetime] = None
+
 router = APIRouter(tags=["Resume"])
+
+
+@router.get("/list", response_model=List[ResumeListItem])
+def list_resumes(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    rows = (
+        db.query(Resume)
+        .filter(Resume.user_id == current_user.id)
+        .order_by(Resume.created_at.asc())
+        .all()
+    )
+    return [
+        ResumeListItem(
+            id=str(r.id),
+            filename=r.original_filename,
+            resume_text=r.resume_text or "",
+            created_at=r.created_at,
+        )
+        for r in rows
+    ]
 
 
 @router.post("/upload", response_model=ResumeResponse)
@@ -101,6 +133,7 @@ async def upload_and_analyze_resume(
         session_id = str(uuid.uuid4())
         SESSION_STORE[session_id] = {
             "analysis": ai_analysis,
+            "resume_text": resume_text,
             "chat_history": []
         }
 

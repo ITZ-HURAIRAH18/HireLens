@@ -39,6 +39,8 @@ Rules:
 
 
 def chat_node(state: AgentState) -> AgentState:
+    if not state.get("resume_text", "").strip():
+        return {**state, "error": "No resume found. Upload a resume first."}
     analysis = state.get("analysis_results", {})
     chat_history = state.get("chat_history", [])
     user_message = state.get("user_message", "")

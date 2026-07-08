@@ -15,8 +15,10 @@ def job_matching_node(state: AgentState) -> AgentState:
     resume_text = state.get("resume_text", "")
     job_description = state.get("job_description", "")
 
-    if not resume_text or not job_description:
-        return {**state, "error": "Both resume_text and job_description are required"}
+    if not resume_text.strip():
+        return {**state, "error": "No resume found. Upload a resume first."}
+    if not job_description.strip():
+        return {**state, "error": "A job description is required for job matching."}
 
     prompt = f"""You are a job matching expert. Analyze how well the resume matches the job description.
 

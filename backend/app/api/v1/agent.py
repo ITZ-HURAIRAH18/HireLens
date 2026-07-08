@@ -9,7 +9,7 @@ router = APIRouter(prefix="/agent", tags=["Agent"])
 
 AgentIntent = Literal[
     "analyze", "chat", "job_match", "ats", "cover_letter",
-    "interview_prep", "mock_interview", "career_path"
+    "interview_prep", "mock_interview", "career_path", "enhance"
 ]
 
 
@@ -25,9 +25,10 @@ class AgentInvokeRequest(BaseModel):
 class AgentInvokeResponse(BaseModel):
     session_id: str
     active_agent: str
-    output: Any
-    analysis_results: dict
-    chat_history: List[dict]
+    output: Any = None
+    error: str = ""
+    analysis_results: dict = {}
+    chat_history: List[dict] = []
 
 
 @router.post("/invoke", response_model=AgentInvokeResponse)
@@ -66,6 +67,7 @@ def invoke_agent(request: AgentInvokeRequest):
         session_id=request.session_id,
         active_agent=result.get("active_agent", request.intent),
         output=result.get("output"),
+        error=result.get("error", ""),
         analysis_results=result.get("analysis_results", {}),
         chat_history=result.get("chat_history", initial_state["chat_history"]),
     )

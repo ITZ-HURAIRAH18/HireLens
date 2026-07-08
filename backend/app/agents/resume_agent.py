@@ -165,6 +165,8 @@ resume_agent = old_graph.compile()
 
 # ── New supervisor-compatible node ──
 def analyze_resume_node(state: AgentState) -> AgentState:
+    if not state.get("resume_text", "").strip():
+        return {**state, "error": "No resume found. Upload a resume first."}
     summary = _generate_summary(state["resume_text"])
     data = _analyze_resume_text(state["resume_text"], summary)
     output = ResumeAgentOutput(**data)

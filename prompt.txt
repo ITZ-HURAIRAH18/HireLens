@@ -1,137 +1,101 @@
-Access to XMLHttpRequest at 'http://localhost:8000/api/v1/auth/signup' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-index.js:50  POST http://localhost:8000/api/v1/auth/signup net::ERR_FAILED 500 (Internal Server Error)try.py", line 484, in _access_cls
-    return self.fallback[key]
-           ~~~~~~~~~~~~~^^^^^
-KeyError: 'ChatSession'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 419, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        self.scope, self.receive, self.send
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 84, in __call__
-    return await self.app(scope, receive, send)     
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^     
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\applications.py", line 1054, in __call__
-    await super().__call__(scope, receive, send)    
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\applications.py", line 123, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
-    raise exc
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
-    await self.app(scope, receive, _send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 91, in __call__
-    await self.simple_response(scope, receive, send, request_headers=headers)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\cors.py", line 146, in simple_response
-    await self.app(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\middleware\exceptions.py", line 62, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
-    raise exc
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", 
-line 758, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", 
-line 778, in app
-    await route.handle(scope, receive, send)        
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", 
-line 299, in handle
-    await self.app(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", 
-line 79, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 64, in wrapped_app
-    raise exc
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\routing.py", 
-line 74, in app
-    response = await func(request)
-               ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 278, in app
-    raw_response = await run_endpoint_function(     
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^     
-        dependant=dependant, values=values, is_coroutine=is_coroutine
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\fastapi\routing.py", line 193, in run_endpoint_function
-    return await run_in_threadpool(dependant.call, **values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\starlette\concurrency.py", line 42, in run_in_threadpool
-    return await anyio.to_thread.run_sync(func, *args)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
-    return await get_async_backend().run_sync_in_worker_thread(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread      
-    return await future
-           ^^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
-    result = context.run(func, *args)
-  File "E:\My Projects\Hire Lens\backend\app\api\v1\auth.py", line 45, in signup
-    existing = db.query(User).filter(User.email == user_data.email).first()
-               ~~~~~~~~^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\session.py", line 2955, in query
-    return self._query_cls(entities, self, **kwargs)           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 276, in __init__
-    self._set_entities(entities)
-    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\query.py", line 289, in _set_entities
-    coercions.expect(
-    ~~~~~~~~~~~~~~~~^
-        roles.ColumnsClauseRole,
-        ^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<2 lines>...
-        post_inspect=True,
-        ^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\sql\coercions.py", line 388, in expect
-    insp._post_inspect
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 1338, in __get__
-    obj.__dict__[self.__name__] = result = self.fget(obj)
-                                           ~~~~~~~~~^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2724, in _post_inspect
-    self._check_configure()
-    ~~~~~~~~~~~~~~~~~~~~~^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2401, in _check_configure
-    _configure_registries({self.registry}, cascade=True)
-    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4218, in _configure_registries
-    _do_configure_registries(registries, cascade)   
-    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^   
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\mapper.py", line 4259, in _do_configure_registries
-    mapper._post_configure_properties()
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\mapper.py", line 2418, in _post_configure_properties        
-    prop.init()
-    ~~~~~~~~~^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\interfaces.py", line 595, in init
-    self.do_init()
-    ~~~~~~~~~~~~^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1655, in do_init
-    self._setup_entity()
-    ~~~~~~~~~~~~~~~~~~^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\relationships.py", line 1865, in _setup_entity
-    self._clsregistry_resolve_name(argument)(),     
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^      
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\clsregistry.py", line 520, in _resolve_name
-    self._raise_for_name(name, err)
-    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
-  File "C:\Users\muham\AppData\Local\Programs\Python\Python313\Lib\site-packages\sqlalchemy\orm\clsregistry.py", line 501, in _raise_for_name
-    raise exc.InvalidRequestError(
-    ...<5 lines>...
-    ) from err
-sqlalchemy.exc.InvalidRequestError: When initializing mapper Mapper[User(users)], expression 'ChatSession' failed to locate a name ('ChatSession'). If this 
-is a class name, consider adding this relationship() to the <class 'app.models.user.User'> class after both dependent classes have been defined.
+{
+  "target_role": "Senior Full-Stack Developer / Software Architect",
+  "skill_gaps": [
+    {
+      "skill": "Cloud Architecture & Services (AWS/Azure/GCP)",
+      "current_level": "beginner",
+      "required_level": "advanced",
+      "priority": "high"
+    },
+    {
+      "skill": "Advanced System Design & Scalability",
+      "current_level": "intermediate",
+      "required_level": "expert",
+      "priority": "high"
+    },
+    {
+      "skill": "DevOps & Infrastructure as Code (IaC)",
+      "current_level": "intermediate",
+      "required_level": "advanced",
+      "priority": "high"
+    },
+    {
+      "skill": "Microservices Architecture & Patterns",
+      "current_level": "beginner",
+      "required_level": "advanced",
+      "priority": "high"
+    },
+    {
+      "skill": "Technical Leadership & Mentorship",
+      "current_level": "none",
+      "required_level": "proficient",
+      "priority": "medium"
+    },
+    {
+      "skill": "Advanced Application Security",
+      "current_level": "intermediate",
+      "required_level": "advanced",
+      "priority": "medium"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect - Associate",
+      "provider": "Amazon Web Services",
+      "estimated_time": "3-4 months",
+      "relevance": "highly relevant"
+    },
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "provider": "Cloud Native Computing Foundation (CNCF)",
+      "estimated_time": "3-5 months",
+      "relevance": "highly relevant"
+    },
+    {
+      "name": "AWS Certified Solutions Architect - Professional",
+      "provider": "Amazon Web Services",
+      "estimated_time": "6-8 months (after Associate)",
+      "relevance": "extremely relevant"
+    }
+  ],
+  "learning_roadmap": [
+    {
+      "phase": "Phase 1: Cloud Architecture & Advanced DevOps",
+      "duration": "4-6 months",
+      "focus": "Mastering cloud infrastructure, deployment, and automation.",
+      "skills": [
+        "AWS/Azure/GCP Core Services (EC2, S3, RDS, Lambda, VPC, IAM, EKS/AKS/GKE)",
+        "Infrastructure as Code (Terraform, CloudFormation)",
+        "Containerization & Orchestration (Docker, Kubernetes, Helm)",
+        "Advanced CI/CD Pipelines (GitHub Actions, GitLab CI, Jenkins)",
+        "Monitoring & Logging (Prometheus, Grafana, ELK Stack)"
+      ]
+    },
+    {
+      "phase": "Phase 2: Distributed System Design & Scalability",
+      "duration": "4-6 months",
+      "focus": "Designing and optimizing complex, resilient, and high-performance systems.",
+      "skills": [
+        "Microservices Architecture & Patterns (Service Discovery, API Gateways, Circuit Breakers)",
+        "Message Queues & Event Streaming (Kafka, RabbitMQ, SQS/SNS)",
+        "Advanced Caching Strategies (Redis, Memcached, CDN)",
+        "Database Scaling & Optimization (Sharding, Replication, Indexing, Query Optimization)",
+        "Load Balancing & High Availability",
+        "Distributed Tracing & Observability"
+      ]
+    },
+    {
+      "phase": "Phase 3: Leadership & Advanced Security",
+      "duration": "2-4 months",
+      "focus": "Preparing for technical leadership, architectural decision-making, and robust security.",
+      "skills": [
+        "Threat Modeling & Secure Coding Practices (OWASP Top 10)",
+        "Identity & Access Management (OAuth2, OpenID Connect)",
+        "System Design Interview Preparation",
+        "Technical Communication & Documentation",
+        "Mentorship & Code Review Best Practices"
+      ]
+    }
+  ],
+  "estimated_timeline": "10-16 months for technical readiness (post-projected 2025 state), followed by 3-5 years of professional experience to attain the role."
+}

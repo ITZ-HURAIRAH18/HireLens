@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
-import { UploadCloud, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
-import Skeleton from "react-loading-skeleton";
+import { UploadCloud, FileText, AlertCircle, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
@@ -85,9 +84,10 @@ export default function UploadPage({ onFileAnalyzed }) {
         </AnimatePresence>
       </div>
       {error && <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 p-3 rounded-lg"><AlertCircle className="w-4 h-4 shrink-0" /><p>{error}</p></motion.div>}
-      <div className="flex justify-end">
-        <Button disabled={!file || uploading} onClick={handleAnalyze} className="shadow-sm">
-          {uploading ? <Skeleton width={90} /> : "Analyze Resume"}
+      <div className="flex justify-center sm:justify-end">
+        <Button disabled={!file || uploading} onClick={handleAnalyze} className="w-full sm:w-auto shadow-md hover:shadow-lg transition-all duration-200 text-base py-3 px-6 gap-2" size="lg">
+          {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+          {uploading ? "Analyzing..." : "Analyze Resume"}
         </Button>
       </div>
     </div>

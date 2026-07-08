@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { FileText } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import MainLayout from "./components/layout/MainLayout";
@@ -44,12 +44,13 @@ function PublicRoute({ children }) {
   return children;
 }
 
-function AppRoutes() {
+function AppContent() {
   const [analysisData, setAnalysisData] = useState(null);
   const [fileName, setFileName] = useState("");
   const [fileSize, setFileSize] = useState(0);
   const [sessionId, setSessionId] = useState(null);
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleFileAnalyzed = useCallback(async (file) => {
     setFileName(file.name);
@@ -58,44 +59,51 @@ function AppRoutes() {
       const { data } = await uploadAndAnalyzeResume(file);
       setAnalysisData(data.ai_analysis);
       setSessionId(data.session_id);
+      navigate("/analysis");
     } catch (error) {
       console.error("Upload error:", error);
       setAnalysisData(null);
     }
-  }, []);
+  }, [navigate]);
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<PublicRoute><Auth mode="login" /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Auth mode="register" /></PublicRoute>} />
-        <Route path="/*" element={
-          <ProtectedRoute>
-            <MainLayout>
-              <Routes>
-                <Route path="/" element={<UploadPage onFileAnalyzed={handleFileAnalyzed} />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/analysis" element={
-                  analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : (
-                    <div className="flex flex-col items-center justify-center py-24 text-center">
-                      <div className="p-5 bg-orange-50 rounded-full mb-6">
-                        <FileText className="w-10 h-10 text-[#d97757]" />
-                      </div>
-                      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
-                      <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
+    <Routes>
+      <Route path="/login" element={<PublicRoute><Auth mode="login" /></PublicRoute>} />
+      <Route path="/register" element={<PublicRoute><Auth mode="register" /></PublicRoute>} />
+      <Route path="/*" element={
+        <ProtectedRoute>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<UploadPage onFileAnalyzed={handleFileAnalyzed} />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/analysis" element={
+                analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : (
+                  <div className="flex flex-col items-center justify-center py-24 text-center">
+                    <div className="p-5 bg-orange-50 rounded-full mb-6">
+                      <FileText className="w-10 h-10 text-[#d97757]" />
                     </div>
-                  )
-                } />
-                <Route path="/suggestions" element={<AISuggestions sessionId={sessionId} />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route path="/history" element={<History />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </MainLayout>
-          </ProtectedRoute>
-        } />
-      </Routes>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
+                    <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
+                  </div>
+                )
+              } />
+              <Route path="/suggestions" element={<AISuggestions sessionId={sessionId} />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </MainLayout>
+        </ProtectedRoute>
+      } />
+    </Routes>
+  );
+}
+
+function AppRoutes() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

@@ -16,8 +16,8 @@ def career_path_node(state: AgentState) -> AgentState:
     job_description = state.get("job_description", "")
     target_role = job_description if job_description else "senior role in your field"
 
-    if not resume_text:
-        return {**state, "error": "resume_text is required"}
+    if not resume_text.strip():
+        return {**state, "error": "No resume found. Upload a resume first."}
 
     prompt = f"""You are a career development expert. Analyze the resume and create a career advancement roadmap.
 

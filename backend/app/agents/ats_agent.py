@@ -45,8 +45,8 @@ CRITERIA FOR ATS SCORING (weighted average):
 def ats_optimization_node(state: AgentState) -> AgentState:
     resume_text = state.get("resume_text", "")
 
-    if not resume_text:
-        return {**state, "error": "resume_text is required"}
+    if not resume_text.strip():
+        return {**state, "error": "No resume found. Upload a resume first."}
 
     scoring_prompt = f"""You are an expert ATS compatibility scoring system.
 {_ATS_RUBRIC}

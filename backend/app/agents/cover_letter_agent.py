@@ -15,10 +15,28 @@ def cover_letter_node(state: AgentState) -> AgentState:
     resume_text = state.get("resume_text", "")
     job_description = state.get("job_description", "")
 
-    if not resume_text or not job_description:
-        return {**state, "error": "Both resume_text and job_description are required"}
+    if not resume_text:
+        return {**state, "error": "No resume found. Upload a resume first."}
 
-    prompt = f"""You are a professional cover letter writer. Write a tailored cover letter based on the resume and job description.
+    if not job_description:
+        prompt = f"""You are a professional cover letter writer. Write a compelling general cover letter for the candidate based on their resume.
+
+The cover letter should highlight the candidate's strengths, experience, and skills. Make it adaptable so they can customize it for any job application.
+
+Resume:
+{resume_text}
+
+Return ONLY valid JSON in this exact format:
+{{
+  "primary_letter": "Full formal cover letter with proper formatting...",
+  "tone_variants": [
+    {{"tone": "formal", "content": "Formal version..."}},
+    {{"tone": "conversational", "content": "Conversational version..."}},
+    {{"tone": "concise", "content": "Brief, punchy version..."}}
+  ]
+}}"""
+    else:
+        prompt = f"""You are a professional cover letter writer. Write a tailored cover letter based on the resume and job description.
 
 Resume:
 {resume_text}

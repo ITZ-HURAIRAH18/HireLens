@@ -4,6 +4,7 @@ import { Send, Sparkles, User, Loader2, FileText, Target, Shield, FileSignature,
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { invokeAgent } from "../api";
+import { AgentOutputRenderer } from "./AgentOutputRenderer";
 
 const AGENTS = [
   { id: "analyze", label: "Resume Analysis", icon: FileText, desc: "Full resume analysis with strengths, weaknesses & scores" },
@@ -48,8 +49,23 @@ export default function AISuggestions({ sessionId }) {
       }
 
       const { data } = await invokeAgent(payload);
-      const reply = data.output?.reply || data.output?.summary || data.output?.overall_assessment || JSON.stringify(data.output, null, 2);
-      setMessages(prev => [...prev, { role: "assistant", agent: agentId, content: reply }]);
+
+      if (data.error) {
+        setError(data.error);
+        setIsTyping(false);
+        return;
+      }
+
+      const output = data.output || {};
+
+      if (!output || Object.keys(output).length === 0) {
+        setError(`Agent "${agentId}" returned no data. Make sure a resume is uploaded and try again.`);
+        setIsTyping(false);
+        return;
+      }
+
+      const textFallback = output.primary_letter || output.reply || "";
+      setMessages(prev => [...prev, { role: "assistant", agent: agentId, output, content: textFallback }]);
     } catch (err) {
       setError(`Agent "${agentId}" failed. Please try again.`);
     }
@@ -81,13 +97,13 @@ export default function AISuggestions({ sessionId }) {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto">
-      <div className="mb-6">
+    <div className="flex flex-col flex-1 min-h-0 max-w-4xl mx-auto">
+      <div className="flex-shrink-0 mb-4">
         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">AI Suggestions</h1>
         <p className="mt-2 text-slate-500 text-sm">Choose an AI agent below to get started.</p>
       </div>
-      {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      {error && <div className="flex-shrink-0 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
+      <div className="flex-shrink-0 grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
         {AGENTS.map((agent) => {
           const Icon = agent.icon;
           const isActive = selectedAgent === agent.id;
@@ -100,8 +116,8 @@ export default function AISuggestions({ sessionId }) {
           );
         })}
       </div>
-      <Card className="flex-1 flex flex-col overflow-hidden bg-white shadow-sm border-slate-200">
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+      <Card className="flex-1 flex flex-col min-h-0 overflow-hidden bg-white shadow-sm border-slate-200">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
           <AnimatePresence initial={false}>
             {messages.length === 0 && !isTyping && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16 text-slate-400">
@@ -113,9 +129,13 @@ export default function AISuggestions({ sessionId }) {
             {messages.map((msg, idx) => (
               <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1"><Sparkles className="w-4 h-4 text-[#d97757]" /></div>}
-                <div className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 ${msg.role === "user" ? "bg-slate-900 text-white" : "bg-slate-50 border border-slate-100 text-slate-900"}`}>
+                <div className={`max-w-[90%] sm:max-w-[80%] rounded-2xl p-4 ${msg.role === "user" ? "bg-slate-900 text-white" : "bg-slate-50 border border-slate-100 text-slate-900"}`}>
                   {msg.agent && <div className="text-xs font-semibold text-[#d97757] mb-2 uppercase tracking-wider">{AGENTS.find(a => a.id === msg.agent)?.label || msg.agent}</div>}
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</div>
+                  {msg.output && msg.agent !== "chat" && msg.agent !== "cover_letter" ? (
+                    <AgentOutputRenderer agent={msg.agent} output={msg.output} />
+                  ) : (
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</div>
+                  )}
                 </div>
                 {msg.role === "user" && <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1 border border-slate-300"><User className="w-4 h-4 text-slate-500" /></div>}
               </motion.div>

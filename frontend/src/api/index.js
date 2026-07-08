@@ -46,6 +46,10 @@ export const getHistory = () => {
   return API.get("/history");
 };
 
+export const getResumes = () => {
+  return API.get("/resume/list");
+};
+
 export const authApi = {
   signup: (data) => API.post("/auth/signup", data),
   login: (data) => API.post("/auth/login", data),
