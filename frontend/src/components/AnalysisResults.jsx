@@ -4,7 +4,15 @@ import { Button } from "./ui/button";
 import { exportApi } from "../api";
 
 export default function AnalysisResults({ analysis, fileName }) {
-  if (!analysis) return <div className="text-center py-20 text-slate-400">No analysis data available. Upload a resume first.</div>;
+  if (!analysis) return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="p-5 bg-orange-50 rounded-full mb-6">
+        <FileText className="w-10 h-10 text-[#d97757]" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
+      <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
+    </div>
+  );
 
   const atsScore = analysis.ats_score ?? 0;
   const clarityScore = analysis.clarity_score ?? 0;

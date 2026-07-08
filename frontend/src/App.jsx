@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { FileText } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import MainLayout from "./components/layout/MainLayout";
 import UploadPage from "./components/UploadPage";
@@ -75,7 +76,15 @@ function AppRoutes() {
                 <Route path="/" element={<UploadPage onFileAnalyzed={handleFileAnalyzed} />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/analysis" element={
-                  analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : <div className="text-center py-20 text-slate-400">Upload a resume first.</div>
+                  analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : (
+                    <div className="flex flex-col items-center justify-center py-24 text-center">
+                      <div className="p-5 bg-orange-50 rounded-full mb-6">
+                        <FileText className="w-10 h-10 text-[#d97757]" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
+                      <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
+                    </div>
+                  )
                 } />
                 <Route path="/suggestions" element={<AISuggestions sessionId={sessionId} />} />
                 <Route path="/compare" element={<Compare />} />

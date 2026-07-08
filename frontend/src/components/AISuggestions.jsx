@@ -70,7 +70,15 @@ export default function AISuggestions({ sessionId }) {
     }
   };
 
-  if (!sessionId) return <div className="text-center py-20 text-slate-400">Upload a resume first to get AI suggestions.</div>;
+  if (!sessionId) return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="p-5 bg-orange-50 rounded-full mb-6">
+        <Sparkles className="w-10 h-10 text-[#d97757]" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Resume Uploaded</h2>
+      <p className="text-base text-slate-500 max-w-md">Upload a resume first to unlock AI agents that can analyze, optimize, and provide suggestions for your career.</p>
+    </div>
+  );
 
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] max-w-4xl mx-auto">

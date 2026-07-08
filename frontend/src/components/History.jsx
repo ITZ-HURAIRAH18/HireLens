@@ -51,10 +51,12 @@ export default function History() {
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 text-slate-400">
-              <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-              <p className="text-lg font-medium text-slate-600">No analyses yet</p>
-              <p className="text-sm mt-1">Upload a resume to get started.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="p-5 bg-slate-50 rounded-full mb-5">
+                <FileText className="w-10 h-10 text-slate-300" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-700 mb-1">No Analyses Yet</h3>
+              <p className="text-base text-slate-400 max-w-sm">Upload a resume to get started. Your analysis history will appear here.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">

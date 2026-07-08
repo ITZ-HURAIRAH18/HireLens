@@ -46,7 +46,15 @@ export default function Dashboard() {
     </div>
   );
   if (error) return <div className="text-center py-20 text-red-400">Failed to load: {error}</div>;
-  if (!stats) return <div className="text-center py-20 text-slate-400">No data yet. Upload a resume to get started.</div>;
+  if (!stats) return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="p-5 bg-orange-50 rounded-full mb-6">
+        <FileText className="w-10 h-10 text-[#d97757]" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Data Yet</h2>
+      <p className="text-base text-slate-500 max-w-md">Upload your first resume to see your dashboard with ATS scores, analysis history, and more.</p>
+    </div>
+  );
 
   return (
     <div className="space-y-8 fade-up">
