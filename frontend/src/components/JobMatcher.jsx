@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { invokeAgent } from "../api";
 import "./JobMatcher.css";
 
@@ -42,7 +43,7 @@ export default function JobMatcher({ sessionId, resumeText }) {
           rows={4}
         />
         <button className="jm-btn" onClick={handleMatch} disabled={loading || !jd.trim()}>
-          {loading ? "Analyzing..." : "Check Match"}
+          {loading ? <Skeleton width={80} /> : "Check Match"}
         </button>
       </div>
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TrendingUp, ArrowUp, ArrowDown, Minus } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { invokeAgent } from "../api";
@@ -50,7 +51,7 @@ export default function Compare() {
         </CardContent></Card>
       </div>
       <div className="flex justify-center">
-        <Button onClick={handleCompare} disabled={loading || !resumeText.trim() || !improvedText.trim()}>{loading ? "Comparing..." : "Compare"}</Button>
+        <Button onClick={handleCompare} disabled={loading || !resumeText.trim() || !improvedText.trim()}>{loading ? <Skeleton width={80} /> : "Compare"}</Button>
       </div>
       {error && <div className="text-center text-red-600 text-sm">{error}</div>}
       {(originalResult || improvedResult) && (

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { UploadCloud, FileText, AlertCircle, CheckCircle2 } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
@@ -90,7 +91,7 @@ export default function UploadPage({ onFileAnalyzed }) {
       {error && <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-100 p-4 rounded-lg"><AlertCircle className="w-5 h-5" /><p>{error}</p></motion.div>}
       <div className="flex justify-end">
         <Button size="lg" disabled={!file || uploading} onClick={handleAnalyze} className="shadow-sm">
-          {uploading ? "Analyzing..." : "Analyze Resume"}
+          {uploading ? <Skeleton width={100} /> : "Analyze Resume"}
         </Button>
       </div>
     </div>

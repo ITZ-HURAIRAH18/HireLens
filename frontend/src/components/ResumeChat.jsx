@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
 import { uploadAndAnalyzeResume, chatWithResume } from "../api";
 import "../styles/resume-chat.css";
 
@@ -162,8 +163,8 @@ export default function ResumeChat() {
 
         {uploading && (
           <div className="loading-message">
-            <div className="spinner"></div>
-            <p>Analyzing your resume...</p>
+            <Skeleton circle width={24} height={24} />
+            <Skeleton width={160} height={16} />
           </div>
         )}
 
@@ -212,12 +213,9 @@ export default function ResumeChat() {
 
           {loading && (
             <div className="msg-wrapper msg-wrapper--assistant">
-              <div className="msg-bubble msg-bubble--assistant msg-bubble--loading">
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
+              <div className="msg-bubble msg-bubble--assistant">
+                <Skeleton width={200} height={16} />
+                <Skeleton width={140} height={16} />
               </div>
             </div>
           )}

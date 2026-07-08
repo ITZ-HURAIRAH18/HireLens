@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { chatWithResume, uploadAndAnalyzeResume } from '../api';
 import '../ChatBot.css';
 
@@ -277,14 +278,8 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
           <div className="chatbot__msg chatbot__msg--assistant">
             <div className="chatbot__avatar">🤖</div>
             <div className="chatbot__bubble chatbot__bubble--loading">
-              <span className="chatbot__typing">
-                <span></span>
-                <span></span>
-                <span></span>
-              </span>
-              <span className="chatbot__loading-text">
-                {uploading ? 'Analyzing resume...' : 'Thinking...'}
-              </span>
+              <Skeleton width={200} height={16} />
+              <Skeleton width={140} height={16} />
             </div>
           </div>
         )}
@@ -328,7 +323,7 @@ export default function ChatBot({ sessionId, onSessionStart, initialAnalysis }) 
           className="chatbot__btn"
           aria-label="Send message"
         >
-          {loading ? <span className="chatbot__spinner" /> : <SendIcon />}
+          {loading ? <Skeleton circle width={20} height={20} /> : <SendIcon />}
         </button>
       </form>
 

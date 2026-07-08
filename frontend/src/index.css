@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "react-loading-skeleton/dist/skeleton.css";
 
 @theme {
   --color-brand-orange: #d97757;

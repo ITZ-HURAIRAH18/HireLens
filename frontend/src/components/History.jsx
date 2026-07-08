@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, FileText } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { getHistory } from "../api";
@@ -35,7 +36,20 @@ export default function History() {
             </div>
           </div>
           {loading ? (
-            <div className="text-center py-16 text-slate-400">Loading history...</div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center space-x-4">
+                <Skeleton height={12} width={120} />
+                <Skeleton height={12} width={80} />
+                <Skeleton height={12} width={60} />
+              </div>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center space-x-4 py-3 border-b border-slate-100">
+                  <Skeleton height={16} width="40%" />
+                  <Skeleton height={16} width="25%" />
+                  <Skeleton height={24} width={50} />
+                </div>
+              ))}
+            </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-16 text-slate-400">
               <FileText className="w-12 h-12 mx-auto mb-4 text-slate-300" />

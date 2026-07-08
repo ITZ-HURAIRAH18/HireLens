@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 import MainLayout from "./components/layout/MainLayout";
 import UploadPage from "./components/UploadPage";
 import AnalysisResults from "./components/AnalysisResults";
@@ -14,14 +15,30 @@ import { uploadAndAnalyzeResume } from "./api";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="w-full max-w-md space-y-6">
+        <Skeleton height={40} width={250} />
+        <Skeleton height={20} count={3} />
+        <Skeleton height={200} />
+      </div>
+    </div>
+  );
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-400">Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="w-full max-w-md space-y-6">
+        <Skeleton height={40} width={250} />
+        <Skeleton height={20} count={3} />
+        <Skeleton height={200} />
+      </div>
+    </div>
+  );
   if (user) return <Navigate to="/" replace />;
   return children;
 }
