@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Bell, Shield, CreditCard, Key, Smartphone } from 'lucide-react';
+import { User, Bell, Shield, CreditCard, Key, Smartphone, AlertTriangle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from './ui/card';
 import { Button } from './ui/button';
 import { cn } from '../lib/utils';
@@ -20,10 +20,24 @@ export default function Settings() {
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'billing', name: 'Billing', icon: CreditCard },
     { id: 'api', name: 'API Keys', icon: Key },
+    { id: 'danger', name: 'Danger Zone', icon: AlertTriangle },
   ];
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 fade-up pb-12">
+      {/* Profile Banner */}
+      {user && (
+        <div className="flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-xl">
+          <div className="w-12 h-12 rounded-full bg-[#d97757] flex items-center justify-center text-lg font-bold text-white">
+            {user.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase() || "U"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-base font-semibold text-slate-900 truncate">{user.full_name || "User"}</p>
+            <p className="text-sm text-slate-500 truncate">{user.email || ""}</p>
+          </div>
+          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-[#d97757] capitalize">{user.subscription_tier || "Free"}</span>
+        </div>
+      )}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Settings</h1>
         <p className="mt-2 text-slate-500 text-sm">
@@ -101,18 +115,6 @@ export default function Settings() {
                   {logout && <Button variant="secondary" onClick={logout}>Sign Out</Button>}
                   <Button>Save changes</Button>
                 </div>
-              </Card>
-
-              <Card className="border-red-100">
-                <CardHeader>
-                  <CardTitle className="text-red-600">Danger Zone</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-slate-600 mb-4">
-                    Permanently delete your account and all of your data. This action cannot be undone.
-                  </p>
-                  <Button variant="danger">Delete Account</Button>
-                </CardContent>
               </Card>
             </>
           )}
@@ -292,6 +294,41 @@ export default function Settings() {
                 </div>
               </CardContent>
             </Card>
+          )}
+
+          {/* DANGER ZONE TAB */}
+          {activeTab === 'danger' && (
+            <div className="space-y-6">
+              <Card className="border-red-200">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-red-500" />
+                    <CardTitle className="text-red-600">Danger Zone</CardTitle>
+                  </div>
+                  <CardDescription>Irreversible actions that affect your account and data.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between p-4 bg-red-50 border border-red-100 rounded-lg">
+                    <div>
+                      <p className="text-sm font-semibold text-red-700">Delete Account</p>
+                      <p className="text-xs text-red-500 mt-1">Permanently remove your account and all associated data.</p>
+                    </div>
+                    <Button variant="danger" size="sm">Delete Account</Button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 bg-amber-50 border border-amber-100 rounded-lg">
+                    <div>
+                      <p className="text-sm font-semibold text-amber-700">Export Data</p>
+                      <p className="text-xs text-amber-500 mt-1">Download all your data before taking irreversible actions.</p>
+                    </div>
+                    <Button variant="secondary" size="sm">Export Data</Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500 text-center">
+                Need help? <a href="#" className="text-[#d97757] hover:underline">Contact support</a>
+              </div>
+            </div>
           )}
 
         </div>

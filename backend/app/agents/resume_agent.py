@@ -16,7 +16,14 @@ from app.agents.types import AgentState
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
 
-llm = ChatGoogleGenerativeAI(
+_llm_scoring = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0,
+    google_api_key=settings.google_api_key,
+    model_kwargs={"generation_config": {"seed": 42}},
+)
+
+_llm_general = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0.3,
     google_api_key=settings.google_api_key,
@@ -36,33 +43,75 @@ Summarize the following resume in 3-4 professional lines:
 
 {resume_text}
 """
-    return llm.invoke(prompt).content.strip()
+    return _llm_general.invoke(prompt).content.strip()
+
+
+ATS_RUBRIC = """
+CRITERIA FOR ATS SCORING (weighted average):
+
+1. FORMAT & STRUCTURE (20%)
+   - Uses standard section headings (Experience, Education, Skills)
+   - Clean layout with consistent formatting
+   - Proper bullet points, no special characters
+   
+2. KEYWORD OPTIMIZATION (25%)
+   - Industry-relevant keywords and phrases present
+   - Technical skills explicitly listed
+   - Keywords match common job descriptions in the field
+   
+3. CONTENT QUALITY (25%)
+   - Achievements are quantified with numbers/metrics
+   - Strong action verbs used throughout
+   - Results-oriented descriptions, not just duties
+   
+4. COMPLETENESS (15%)
+   - Contact info (email, phone, LinkedIn)
+   - Work experience with dates and companies
+   - Education section present
+   - Skills section present
+   
+5. READABILITY & CONCISENESS (15%)
+   - Clear, scannable content
+   - Appropriate length (not too short or too long)
+   - Good grammar and spelling
+"""
+
+SCORE_SYSTEM_PROMPT = """You are an expert ATS scoring system. Score the resume using the rubric below.
+
+For each criterion, assign a score 0-100, then return the final ats_score as the weighted sum:
+- Format & Structure: 20%
+- Keyword Optimization: 25%
+- Content Quality: 25%
+- Completeness: 15%
+- Readability & Conciseness: 15%
+
+"""
 
 
 def _analyze_resume_text(resume_text: str, summary: str = "") -> dict:
-    prompt = f"""
-Analyze the resume and return ONLY valid JSON.
+    scoring_prompt = f"""{SCORE_SYSTEM_PROMPT}{ATS_RUBRIC}
 
-Rules:
-- Max 5 words per bullet
-- Max 3 items per list
-- ATS score between 0 and 100
+Return ONLY valid JSON with no markdown formatting:
 
-JSON format:
 {{
-  "summary": "one line",
-  "strengths": [string],
-  "weaknesses": [string],
-  "improvement_tips": [string],
-  "suggested_roles": [string],
-  "ats_score": number
+  "format_score": <0-100>,
+  "keyword_score": <0-100>,
+  "content_score": <0-100>,
+  "completeness_score": <0-100>,
+  "readability_score": <0-100>,
+  "ats_score": <computed weighted average 0-100>,
+  "strengths": ["strength1", "strength2", "strength3"],
+  "weaknesses": ["weakness1", "weakness2", "weakness3"],
+  "improvement_tips": ["tip1", "tip2", "tip3"],
+  "suggested_roles": ["role1", "role2", "role3"],
+  "summary": "one line summary of the resume"
 }}
 
 Resume:
 {resume_text}
 """
 
-    response = llm.invoke(prompt).content.strip()
+    response = _llm_scoring.invoke(scoring_prompt).content.strip()
 
     if response.startswith("```"):
         response = response.replace("```json", "").replace("```", "").strip()
@@ -76,7 +125,21 @@ Resume:
         "improvement_tips": data.get("improvement_tips", []),
         "suggested_roles": data.get("suggested_roles", []),
         "ats_score": int(data.get("ats_score", 0)),
+        "format_score": _safe_int(data.get("format_score")),
+        "keyword_score": _safe_int(data.get("keyword_score")),
+        "content_score": _safe_int(data.get("content_score")),
+        "completeness_score": _safe_int(data.get("completeness_score")),
+        "readability_score": _safe_int(data.get("readability_score")),
     }
+
+
+def _safe_int(v):
+    if v is None:
+        return None
+    try:
+        return int(v)
+    except (ValueError, TypeError):
+        return None
 
 
 # ── Old graph nodes (backward compat) ──

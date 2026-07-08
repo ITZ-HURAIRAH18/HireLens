@@ -1,7 +1,15 @@
-import { FileText, CheckCircle2, AlertTriangle } from "lucide-react";
+import { FileText, CheckCircle2, AlertTriangle, Download } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { exportApi } from "../api";
+
+const SCORE_LABELS = {
+  keyword_score: { label: "Keywords", desc: "Industry keyword coverage" },
+  content_score: { label: "Content", desc: "Quantified achievements & action verbs" },
+  format_score: { label: "Format", desc: "Section headings & structure" },
+  completeness_score: { label: "Completeness", desc: "Contact, experience, education" },
+  readability_score: { label: "Readability", desc: "Clarity & conciseness" },
+};
 
 export default function AnalysisResults({ analysis, fileName }) {
   if (!analysis) return (
@@ -15,13 +23,37 @@ export default function AnalysisResults({ analysis, fileName }) {
   );
 
   const atsScore = analysis.ats_score ?? 0;
-  const clarityScore = analysis.clarity_score ?? 0;
-  const impactScore = analysis.impact_score ?? 0;
+  const scoreKeys = Object.keys(SCORE_LABELS).filter((k) => analysis[k] != null);
 
   const handleExport = async () => {
     try {
-      const reportContent = `ATS Score: ${atsScore}/100\nClarity: ${clarityScore}/100\nImpact: ${impactScore}/100\n\nSummary: ${analysis.summary || "N/A"}\n\nStrengths: ${(analysis.strengths || []).join(", ")}\nWeaknesses: ${(analysis.weaknesses || []).join(", ")}`;
-      await exportApi.report({ content: reportContent, title: "HireLens-Report", format: "pdf" });
+      const reportContent = [
+        `ATS Score: ${atsScore}/100`,
+        ...scoreKeys.map((k) => `${SCORE_LABELS[k].label}: ${analysis[k]}/100`),
+        "",
+        `Summary: ${analysis.summary || "N/A"}`,
+        "",
+        "Strengths:",
+        ...(analysis.strengths || []).map((s) => `  - ${s}`),
+        "",
+        "Areas to Improve:",
+        ...(analysis.weaknesses || []).map((w) => `  - ${w}`),
+      ].join("\n");
+
+      const res = await exportApi.report({
+        content: reportContent,
+        title: "HireLens-Report",
+        format: "pdf",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "HireLens-Report.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Export failed:", err);
     }
@@ -34,44 +66,124 @@ export default function AnalysisResults({ analysis, fileName }) {
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Resume Analysis</h1>
           <p className="mt-2 text-slate-500 text-sm flex items-center"><FileText className="w-4 h-4 mr-2" />{fileName || "Resume"}</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="secondary" onClick={handleExport}>Download Report</Button>
+        <Button variant="secondary" onClick={handleExport}>
+          <Download className="w-4 h-4 mr-2" /> Download Report
+        </Button>
+      </div>
+
+      {/* Overall Score */}
+      <div className="flex items-center gap-6 p-6 bg-white border border-slate-200 rounded-xl">
+        <div className="relative w-24 h-24 flex-shrink-0">
+          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e5e7eb" strokeWidth="3" />
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#d97757" strokeWidth="3"
+              strokeDasharray={`${atsScore}, 100`} strokeLinecap="round" />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-slate-900">{atsScore}</span>
+        </div>
+        <div>
+          <p className="text-lg font-semibold text-slate-900">ATS Compatibility Score</p>
+          <p className="text-sm text-slate-500 mt-1">
+            {atsScore >= 80 ? "Strong compatibility — well optimized for ATS systems." :
+             atsScore >= 60 ? "Moderate compatibility — some improvements recommended." :
+             "Needs improvement — significant changes recommended to pass ATS filters."}
+          </p>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1 bg-slate-900 text-white border-none">
-          <CardContent className="p-8 flex flex-col items-center justify-center h-full text-center space-y-4">
-            <h3 className="text-lg font-medium text-slate-300">Overall ATS Score</h3>
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="64" cy="64" r="60" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-800" />
-                <circle cx="64" cy="64" r="60" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={377} strokeDashoffset={377 - (377 * atsScore) / 100} className={atsScore > 75 ? "text-green-500" : "text-amber-500"} />
-              </svg>
-              <span className="absolute text-4xl font-bold">{atsScore}</span>
-            </div>
-            <p className="text-sm text-slate-400">{atsScore > 75 ? "Great job! Highly ATS compatible." : "Needs improvement to pass ATS filters."}</p>
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Score Breakdown</CardTitle></CardHeader>
-          <CardContent className="space-y-6">
-            <div>
-              <div className="flex justify-between mb-2"><span className="text-sm font-medium text-slate-700">Impact</span><span className="text-sm font-medium text-slate-900">{impactScore}/100</span></div>
-              <div className="w-full bg-slate-100 rounded-full h-2"><div className="bg-[#d97757] h-2 rounded-full" style={{ width: `${impactScore}%` }}></div></div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2"><span className="text-sm font-medium text-slate-700">Clarity</span><span className="text-sm font-medium text-slate-900">{clarityScore}/100</span></div>
-              <div className="w-full bg-slate-100 rounded-full h-2"><div className="bg-[#d97757] h-2 rounded-full" style={{ width: `${clarityScore}%` }}></div></div>
-            </div>
-            {analysis.summary && <div className="p-4 bg-orange-50 border border-orange-100 rounded-lg text-sm text-slate-800"><strong className="text-[#d97757] font-semibold">Summary:</strong> {analysis.summary}</div>}
-          </CardContent>
-        </Card>
-      </div>
-      {analysis.strengths?.length > 0 && (
-        <Card><CardHeader><CardTitle>Strengths</CardTitle></CardHeader><CardContent><div className="flex flex-wrap gap-2">{analysis.strengths.map((s, i) => <span key={i} className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200"><CheckCircle2 className="w-3 h-3 inline mr-1" />{s}</span>)}</div></CardContent></Card>
+
+      {/* Sub-scores */}
+      {scoreKeys.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {scoreKeys.map((key) => {
+            const val = analysis[key];
+            const meta = SCORE_LABELS[key];
+            return (
+              <div key={key} className="p-5 bg-white border border-slate-200 rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-slate-700">{meta.label}</span>
+                  <span className="text-sm font-bold text-slate-900">{val}<span className="text-xs font-normal text-slate-400">/100</span></span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2">
+                  <div className="bg-[#d97757] h-2 rounded-full transition-all" style={{ width: `${val}%` }}></div>
+                </div>
+                <p className="text-xs text-slate-400 mt-2">{meta.desc}</p>
+              </div>
+            );
+          })}
+        </div>
       )}
-      {analysis.weaknesses?.length > 0 && (
-        <Card><CardHeader><CardTitle>Areas to Improve</CardTitle></CardHeader><CardContent><div className="flex flex-wrap gap-2">{analysis.weaknesses.map((w, i) => <span key={i} className="px-3 py-1 bg-orange-50 text-orange-700 rounded-full text-xs font-medium border border-orange-200"><AlertTriangle className="w-3 h-3 inline mr-1" />{w}</span>)}</div></CardContent></Card>
+
+      {/* Summary */}
+      {analysis.summary && (
+        <Card>
+          <CardHeader><CardTitle>Summary</CardTitle></CardHeader>
+          <CardContent>
+            <p className="text-sm text-slate-700 leading-relaxed">{analysis.summary}</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Strengths & Weaknesses */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {analysis.strengths?.length > 0 && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                <CardTitle>Strengths</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {analysis.strengths.map((s, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+        {analysis.weaknesses?.length > 0 && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                <CardTitle>Areas to Improve</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3">
+                {analysis.weaknesses.map((w, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                    {w}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Improvement Tips */}
+      {analysis.improvement_tips?.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {analysis.improvement_tips.map((tip, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
+                  <span className="w-6 h-6 rounded-full bg-[#d97757] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                  <p className="text-sm text-slate-700">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

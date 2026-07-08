@@ -35,27 +35,15 @@ export default function MainLayout({ children }) {
                 </NavLink>
               ))}
             </nav>
-            <div className="px-4 mt-8 space-y-1">
+            <div className="px-4 mt-auto pt-6 space-y-1">
               <NavLink to="/settings" className={({ isActive }) => cn(isActive ? "bg-orange-50 text-[#d97757]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900", "group flex items-center px-3 py-2 text-sm font-medium rounded-md")}>
                 <Settings className="mr-3 flex-shrink-0 h-5 w-5" />
                 Settings
               </NavLink>
-            </div>
-          </div>
-          <div className="flex-shrink-0 flex border-t border-slate-200 p-4">
-            <div className="flex-shrink-0 w-full group block">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm font-medium text-slate-600 border border-slate-300">
-                    {user?.full_name?.charAt(0) || "U"}
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-slate-700">{user?.full_name || "User"}</p>
-                    <p className="text-xs font-medium text-slate-500">{user?.email || ""}</p>
-                  </div>
-                </div>
-                <button onClick={handleLogout} className="p-1 text-slate-400 hover:text-red-500" title="Sign out"><LogOut className="w-4 h-4" /></button>
-              </div>
+              <button onClick={handleLogout} className="w-full group flex items-center px-3 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-red-50 hover:text-red-600">
+                <LogOut className="mr-3 flex-shrink-0 h-5 w-5" />
+                Sign out
+              </button>
             </div>
           </div>
         </div>
