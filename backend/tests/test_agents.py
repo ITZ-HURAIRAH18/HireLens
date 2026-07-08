@@ -150,8 +150,20 @@ def test_agent_schemas():
 def test_ats_schema():
     from app.schemas.ats import ATSOutput, ATSFix
     fix = ATSFix(issue="Test", severity="critical", recommendation="Fix it")
-    output = ATSOutput(ats_compatibility_score=75, critical_issues=[fix], warnings=[], suggestions=[], summary="OK")
-    assert output.ats_compatibility_score == 75
+    output = ATSOutput(
+        format_score=80,
+        keyword_score=75,
+        content_score=85,
+        completeness_score=90,
+        readability_score=80,
+        ats_compatibility_score=82,
+        critical_issues=[fix],
+        warnings=[],
+        suggestions=[],
+        summary="OK",
+    )
+    assert output.ats_compatibility_score == 82
+    assert output.format_score == 80
 
 
 def test_job_matching_schema():

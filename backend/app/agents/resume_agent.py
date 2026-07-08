@@ -1,33 +1,40 @@
 import json
 import tempfile
 import os
-from typing import TypedDict
+from typing import TypedDict, List
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 
 from langgraph.graph import StateGraph, END
 from langchain_google_genai import ChatGoogleGenerativeAI
+from pydantic import BaseModel, Field
 
 from app.schemas.resume import ResumeResponse
 from app.schemas.agent import ResumeAgentOutput
 from app.services.resume_parser import extract_text_from_pdf, extract_text_from_docx, parse_resume_text
+from app.services.ats_scorer import compute_ats_scores
 from app.core.config import settings
 from app.agents.types import AgentState
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
-
-_llm_scoring = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    temperature=0,
-    google_api_key=settings.google_api_key,
-    model_kwargs={"generation_config": {"seed": 42}},
-)
 
 _llm_general = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0.3,
     google_api_key=settings.google_api_key,
 )
+
+
+class ResumeQualitative(BaseModel):
+    summary: str = Field(description="One-line summary of the resume")
+    strengths: List[str] = Field(description="Top 3 strengths of the resume")
+    weaknesses: List[str] = Field(description="Top 3 weaknesses of the resume")
+    improvement_tips: List[str] = Field(description="3 specific tips to improve the resume")
+    suggested_roles: List[str] = Field(description="3-5 job roles this resume is best suited for")
+
+
+_structured_llm = _llm_general.with_structured_output(ResumeQualitative)
+
 
 # ── Old state (backward compat with existing endpoints) ──
 class ResumeState(TypedDict):
@@ -46,100 +53,45 @@ Summarize the following resume in 3-4 professional lines:
     return _llm_general.invoke(prompt).content.strip()
 
 
-ATS_RUBRIC = """
-CRITERIA FOR ATS SCORING (weighted average):
-
-1. FORMAT & STRUCTURE (20%)
-   - Uses standard section headings (Experience, Education, Skills)
-   - Clean layout with consistent formatting
-   - Proper bullet points, no special characters
-   
-2. KEYWORD OPTIMIZATION (25%)
-   - Industry-relevant keywords and phrases present
-   - Technical skills explicitly listed
-   - Keywords match common job descriptions in the field
-   
-3. CONTENT QUALITY (25%)
-   - Achievements are quantified with numbers/metrics
-   - Strong action verbs used throughout
-   - Results-oriented descriptions, not just duties
-   
-4. COMPLETENESS (15%)
-   - Contact info (email, phone, LinkedIn)
-   - Work experience with dates and companies
-   - Education section present
-   - Skills section present
-   
-5. READABILITY & CONCISENESS (15%)
-   - Clear, scannable content
-   - Appropriate length (not too short or too long)
-   - Good grammar and spelling
-"""
-
-SCORE_SYSTEM_PROMPT = """You are an expert ATS scoring system. Score the resume using the rubric below.
-
-For each criterion, assign a score 0-100, then return the final ats_score as the weighted sum:
-- Format & Structure: 20%
-- Keyword Optimization: 25%
-- Content Quality: 25%
-- Completeness: 15%
-- Readability & Conciseness: 15%
-
-"""
-
-
 def _analyze_resume_text(resume_text: str, summary: str = "") -> dict:
-    scoring_prompt = f"""{SCORE_SYSTEM_PROMPT}{ATS_RUBRIC}
+    # Step 1: Python computes deterministic ATS scores
+    scores = compute_ats_scores(resume_text)
 
-Return ONLY valid JSON with no markdown formatting:
-
-{{
-  "format_score": <0-100>,
-  "keyword_score": <0-100>,
-  "content_score": <0-100>,
-  "completeness_score": <0-100>,
-  "readability_score": <0-100>,
-  "ats_score": <computed weighted average 0-100>,
-  "strengths": ["strength1", "strength2", "strength3"],
-  "weaknesses": ["weakness1", "weakness2", "weakness3"],
-  "improvement_tips": ["tip1", "tip2", "tip3"],
-  "suggested_roles": ["role1", "role2", "role3"],
-  "summary": "one line summary of the resume"
-}}
+    # Step 2: Gemini provides qualitative analysis
+    qualitative_prompt = f"""Analyze this resume and provide:
+1. A one-line summary
+2. Top 3 strengths
+3. Top 3 weaknesses
+4. 3 specific improvement tips
+5. 3-5 job roles it's best suited for
 
 Resume:
 {resume_text}
 """
-
-    response = _llm_scoring.invoke(scoring_prompt).content.strip()
-
-    if response.startswith("```"):
-        response = response.replace("```json", "").replace("```", "").strip()
-
-    data = json.loads(response)
+    try:
+        qualitative = _structured_llm.invoke(qualitative_prompt)
+    except Exception:
+        qualitative = ResumeQualitative(
+            summary=summary or "",
+            strengths=[],
+            weaknesses=[],
+            improvement_tips=[],
+            suggested_roles=[],
+        )
 
     return {
-        "summary": summary or data.get("summary", ""),
-        "strengths": data.get("strengths", []),
-        "weaknesses": data.get("weaknesses", []),
-        "improvement_tips": data.get("improvement_tips", []),
-        "suggested_roles": data.get("suggested_roles", []),
-        "ats_score": int(data.get("ats_score", 0)),
-        "format_score": _safe_int(data.get("format_score")),
-        "keyword_score": _safe_int(data.get("keyword_score")),
-        "content_score": _safe_int(data.get("content_score")),
-        "completeness_score": _safe_int(data.get("completeness_score")),
-        "readability_score": _safe_int(data.get("readability_score")),
+        "summary": qualitative.summary or summary,
+        "strengths": qualitative.strengths,
+        "weaknesses": qualitative.weaknesses,
+        "improvement_tips": qualitative.improvement_tips,
+        "suggested_roles": qualitative.suggested_roles,
+        "ats_score": scores["ats_score"],
+        "format_score": scores["format_score"],
+        "keyword_score": scores["keyword_score"],
+        "content_score": scores["content_score"],
+        "completeness_score": scores["completeness_score"],
+        "readability_score": scores["readability_score"],
     }
-
-
-def _safe_int(v):
-    if v is None:
-        return None
-    try:
-        return int(v)
-    except (ValueError, TypeError):
-        return None
 
 
 # ── Old graph nodes (backward compat) ──
