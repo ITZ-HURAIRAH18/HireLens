@@ -2,9 +2,9 @@
 @import "react-loading-skeleton/dist/skeleton.css";
 
 @theme {
-  --color-brand-orange: #d97757;
-  --color-brand-orange-hover: #c46445;
-  --color-brand-orange-light: #fef5f2;
+  --color-brand-orange: #2DC08D;
+  --color-brand-orange-hover: #26A37A;
+  --color-brand-orange-light: #EAF9F4;
   
   --color-bg-primary: #ffffff;
   --color-bg-secondary: #f9fafb;

@@ -28,14 +28,14 @@ export default function Settings() {
       {/* Profile Banner */}
       {user && (
         <div className="flex items-center gap-4 p-5 bg-white border border-slate-200 rounded-xl">
-          <div className="w-12 h-12 rounded-full bg-[#d97757] flex items-center justify-center text-lg font-bold text-white">
+          <div className="w-12 h-12 rounded-full bg-[#2DC08D] flex items-center justify-center text-lg font-bold text-white">
             {user.full_name?.charAt(0) || user.email?.charAt(0)?.toUpperCase() || "U"}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-base font-semibold text-slate-900 truncate">{user.full_name || "User"}</p>
             <p className="text-sm text-slate-500 truncate">{user.email || ""}</p>
           </div>
-          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-orange-50 text-[#d97757] capitalize">{user.subscription_tier || "Free"}</span>
+          <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-[#2DC08D] capitalize">{user.subscription_tier || "Free"}</span>
         </div>
       )}
       <div>
@@ -56,14 +56,14 @@ export default function Settings() {
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   activeTab === tab.id
-                    ? 'bg-orange-50 text-[#d97757]'
+                    ? 'bg-emerald-50 text-[#2DC08D]'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
                   'group flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap w-full text-left'
                 )}
               >
                 <tab.icon
                   className={cn(
-                    activeTab === tab.id ? 'text-[#d97757]' : 'text-slate-400 group-hover:text-slate-500',
+                    activeTab === tab.id ? 'text-[#2DC08D]' : 'text-slate-400 group-hover:text-slate-500',
                     'mr-3 flex-shrink-0 h-5 w-5'
                   )}
                 />
@@ -102,11 +102,11 @@ export default function Settings() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="first-name" className="block text-sm font-medium text-slate-700">Full Name</label>
-                      <input type="text" id="first-name" defaultValue={user?.full_name || "Admin User"} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#d97757] focus:border-[#d97757] sm:text-sm" />
+                      <input type="text" id="first-name" defaultValue={user?.full_name || "Admin User"} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#2DC08D] focus:border-[#2DC08D] sm:text-sm" />
                     </div>
                     <div className="space-y-2 sm:col-span-2">
                       <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email address</label>
-                      <input type="email" id="email" defaultValue={user?.email || "admin@hirelenz.com"} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#d97757] focus:border-[#d97757] sm:text-sm" />
+                      <input type="email" id="email" defaultValue={user?.email || "admin@hirelenz.com"} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#2DC08D] focus:border-[#2DC08D] sm:text-sm" />
                     </div>
                   </div>
                   <div className="text-sm text-slate-500">Subscription: <span className="font-medium text-slate-700 capitalize">{user?.subscription_tier || "free"}</span></div>
@@ -130,15 +130,15 @@ export default function Settings() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Current Password</label>
-                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#d97757] focus:border-[#d97757] sm:text-sm" />
+                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#2DC08D] focus:border-[#2DC08D] sm:text-sm" />
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">New Password</label>
-                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#d97757] focus:border-[#d97757] sm:text-sm" />
+                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#2DC08D] focus:border-[#2DC08D] sm:text-sm" />
                   </div>
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Confirm New Password</label>
-                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#d97757] focus:border-[#d97757] sm:text-sm" />
+                    <input type="password" placeholder="••••••••" className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-[#2DC08D] focus:border-[#2DC08D] sm:text-sm" />
                   </div>
                 </CardContent>
                 <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end">
@@ -182,7 +182,7 @@ export default function Settings() {
                   
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
-                      <input id="analysis" type="checkbox" defaultChecked className="h-4 w-4 rounded border-slate-300 text-[#d97757] focus:ring-[#d97757]" />
+                      <input id="analysis" type="checkbox" defaultChecked className="h-4 w-4 rounded border-slate-300 text-[#2DC08D] focus:ring-[#2DC08D]" />
                     </div>
                     <div className="ml-3 text-sm">
                       <label htmlFor="analysis" className="font-medium text-slate-700">Analysis Complete</label>
@@ -192,7 +192,7 @@ export default function Settings() {
                   
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
-                      <input id="marketing" type="checkbox" className="h-4 w-4 rounded border-slate-300 text-[#d97757] focus:ring-[#d97757]" />
+                      <input id="marketing" type="checkbox" className="h-4 w-4 rounded border-slate-300 text-[#2DC08D] focus:ring-[#2DC08D]" />
                     </div>
                     <div className="ml-3 text-sm">
                       <label htmlFor="marketing" className="font-medium text-slate-700">Marketing & Tips</label>
@@ -202,7 +202,7 @@ export default function Settings() {
                   
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
-                      <input id="security-alerts" type="checkbox" defaultChecked disabled className="h-4 w-4 rounded border-slate-300 text-[#d97757] focus:ring-[#d97757]" />
+                      <input id="security-alerts" type="checkbox" defaultChecked disabled className="h-4 w-4 rounded border-slate-300 text-[#2DC08D] focus:ring-[#2DC08D]" />
                     </div>
                     <div className="ml-3 text-sm">
                       <label htmlFor="security-alerts" className="font-medium text-slate-700">Security Alerts</label>
@@ -226,9 +226,9 @@ export default function Settings() {
                   <CardDescription>You are currently on the Pro plan.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-4 bg-orange-50 border border-orange-100 rounded-lg flex justify-between items-center">
+                  <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg flex justify-between items-center">
                     <div>
-                      <h4 className="font-semibold text-[#d97757]">Pro Subscription</h4>
+                      <h4 className="font-semibold text-[#2DC08D]">Pro Subscription</h4>
                       <p className="text-sm text-slate-600 mt-1">Unlimited analyses, AI chat, and PDF exports.</p>
                     </div>
                     <div className="text-right">
@@ -315,10 +315,10 @@ export default function Settings() {
                     </div>
                     <Button variant="danger" size="sm">Delete Account</Button>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-amber-50 border border-amber-100 rounded-lg">
+                  <div className="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
                     <div>
-                      <p className="text-sm font-semibold text-amber-700">Export Data</p>
-                      <p className="text-xs text-amber-500 mt-1">Download all your data before taking irreversible actions.</p>
+                      <p className="text-sm font-semibold text-emerald-700">Export Data</p>
+                      <p className="text-xs text-emerald-500 mt-1">Download all your data before taking irreversible actions.</p>
                     </div>
                     <Button variant="secondary" size="sm">Export Data</Button>
                   </div>
@@ -326,7 +326,7 @@ export default function Settings() {
               </Card>
 
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500 text-center">
-                Need help? <a href="#" className="text-[#d97757] hover:underline">Contact support</a>
+                Need help? <a href="#" className="text-[#2DC08D] hover:underline">Contact support</a>
               </div>
             </div>
           )}

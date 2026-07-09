@@ -14,7 +14,7 @@ function ScoreRing({ score, label, size = "md" }) {
     <div className={`relative ${dimension} flex-shrink-0`}>
       <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
         <circle cx="18" cy="18" r={radius} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} />
-        <circle cx="18" cy="18" r={radius} fill="none" stroke="#d97757" strokeWidth={strokeWidth}
+        <circle cx="18" cy="18" r={radius} fill="none" stroke="#2DC08D" strokeWidth={strokeWidth}
           strokeDasharray={circumference} strokeDashoffset={dashOffset} strokeLinecap="round" />
       </svg>
       <span className={`absolute inset-0 flex items-center justify-center font-bold text-slate-900 ${innerSize}`}>{score}</span>
@@ -31,7 +31,7 @@ function SubScoreBar({ label, value, desc }) {
         <span className="text-xs font-bold text-slate-900">{value}<span className="text-[10px] font-normal text-slate-400">/100</span></span>
       </div>
       <div className="w-full bg-slate-100 rounded-full h-1.5">
-        <div className="bg-[#d97757] h-1.5 rounded-full transition-all" style={{ width: `${value}%` }}></div>
+        <div className="bg-[#2DC08D] h-1.5 rounded-full transition-all" style={{ width: `${value}%` }}></div>
       </div>
       {desc && <p className="text-[10px] text-slate-400 mt-1">{desc}</p>}
     </div>
@@ -82,12 +82,12 @@ function ResumeAnalysisView({ output }) {
         )}
         {output.weaknesses?.length > 0 && (
           <Card>
-            <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /><CardTitle className="text-sm">Areas to Improve</CardTitle></div></CardHeader>
+            <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-emerald-500" /><CardTitle className="text-sm">Areas to Improve</CardTitle></div></CardHeader>
             <CardContent className="pt-0">
               <ul className="space-y-1.5">
                 {output.weaknesses.map((w, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />{w}
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />{w}
                   </li>
                 ))}
               </ul>
@@ -97,11 +97,11 @@ function ResumeAnalysisView({ output }) {
       </div>
       {output.improvement_tips?.length > 0 && (
         <Card>
-          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Lightbulb className="w-4 h-4 text-[#d97757]" /><CardTitle className="text-sm">Recommendations</CardTitle></div></CardHeader>
+          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Lightbulb className="w-4 h-4 text-[#2DC08D]" /><CardTitle className="text-sm">Recommendations</CardTitle></div></CardHeader>
           <CardContent className="pt-0 space-y-2">
             {output.improvement_tips.map((tip, i) => (
               <div key={i} className="flex items-start gap-2 p-2.5 bg-slate-50 rounded-lg">
-                <span className="w-5 h-5 rounded-full bg-[#d97757] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <span className="w-5 h-5 rounded-full bg-[#2DC08D] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
                 <p className="text-xs text-slate-700">{tip}</p>
               </div>
             ))}
@@ -111,7 +111,7 @@ function ResumeAnalysisView({ output }) {
       {output.suggested_roles?.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {output.suggested_roles.map((role, i) => (
-            <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 text-[#d97757] text-[11px] font-medium rounded-full border border-orange-200">
+            <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-[#2DC08D] text-[11px] font-medium rounded-full border border-emerald-200">
               <Star className="w-3 h-3" />{role}
             </span>
           ))}
@@ -153,9 +153,9 @@ function ATSView({ output }) {
       {issues.length > 0 && (
         <div className="space-y-2">
           {issues.map((item, i) => (
-            <div key={i} className={`p-3 rounded-lg border text-xs ${item.severity === "critical" ? "bg-red-50 border-red-200" : item.severity === "warning" ? "bg-amber-50 border-amber-200" : "bg-slate-50 border-slate-200"}`}>
+            <div key={i} className={`p-3 rounded-lg border text-xs ${item.severity === "critical" ? "bg-red-50 border-red-200" : item.severity === "warning" ? "bg-emerald-50 border-emerald-200" : "bg-slate-50 border-slate-200"}`}>
               <div className="flex items-start gap-2">
-                {item.severity === "critical" ? <AlertTriangle className="w-3.5 h-3.5 text-red-500 mt-0.5 flex-shrink-0" /> : <Zap className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />}
+                {item.severity === "critical" ? <AlertTriangle className="w-3.5 h-3.5 text-red-500 mt-0.5 flex-shrink-0" /> : <Zap className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />}
                 <div>
                   <p className="font-medium text-slate-800">{item.issue}</p>
                   {item.recommendation && <p className="text-slate-500 mt-0.5">{item.recommendation}</p>}
@@ -178,7 +178,7 @@ function JobMatchView({ output }) {
         <div className="relative w-20 h-20 flex-shrink-0">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
             <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e5e7eb" strokeWidth="3" />
-            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#d97757" strokeWidth="3"
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#2DC08D" strokeWidth="3"
               strokeDasharray={`${pct * 0.628}, 62.8`} strokeLinecap="round" />
           </svg>
           <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-slate-900">{pct}%</span>
@@ -202,10 +202,10 @@ function JobMatchView({ output }) {
         )}
         {output.missing_keywords?.length > 0 && (
           <Card>
-            <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-amber-500" /><CardTitle className="text-sm">Missing Keywords</CardTitle></div></CardHeader>
+            <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><AlertTriangle className="w-4 h-4 text-emerald-500" /><CardTitle className="text-sm">Missing Keywords</CardTitle></div></CardHeader>
             <CardContent className="pt-0 flex flex-wrap gap-1.5">
               {output.missing_keywords.map((kw, i) => (
-                <span key={i} className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[11px] font-medium rounded-full border border-amber-200">{kw}</span>
+                <span key={i} className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[11px] font-medium rounded-full border border-emerald-200">{kw}</span>
               ))}
             </CardContent>
           </Card>
@@ -213,7 +213,7 @@ function JobMatchView({ output }) {
       </div>
       {output.skill_gaps?.length > 0 && (
         <Card>
-          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Target className="w-4 h-4 text-[#d97757]" /><CardTitle className="text-sm">Skill Gaps</CardTitle></div></CardHeader>
+          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Target className="w-4 h-4 text-[#2DC08D]" /><CardTitle className="text-sm">Skill Gaps</CardTitle></div></CardHeader>
           <CardContent className="pt-0 space-y-2">
             {output.skill_gaps.map((sg, i) => (
               <div key={i} className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg">
@@ -221,7 +221,7 @@ function JobMatchView({ output }) {
                   <p className="text-xs font-medium text-slate-800">{sg.skill}</p>
                   <p className="text-[10px] text-slate-400">{sg.category}</p>
                 </div>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${sg.importance === "high" ? "bg-red-50 text-red-600" : "bg-amber-50 text-amber-600"}`}>{sg.importance}</span>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${sg.importance === "high" ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>{sg.importance}</span>
               </div>
             ))}
           </CardContent>
@@ -239,7 +239,7 @@ function CoverLetterView({ output }) {
       </div>
       {output.tone_variants?.length > 0 && (
         <details className="text-xs">
-          <summary className="cursor-pointer text-[#d97757] font-medium hover:underline">Other tone variants ({output.tone_variants.length})</summary>
+          <summary className="cursor-pointer text-[#2DC08D] font-medium hover:underline">Other tone variants ({output.tone_variants.length})</summary>
           <div className="mt-2 space-y-3">
             {output.tone_variants.map((v, i) => (
               <div key={i} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
@@ -258,8 +258,8 @@ function InterviewPrepView({ output }) {
   return (
     <div className="space-y-4">
       {output.target_role && (
-        <div className="flex items-center gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-          <Target className="w-4 h-4 text-[#d97757]" />
+        <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+          <Target className="w-4 h-4 text-[#2DC08D]" />
           <span className="text-xs font-medium text-slate-800">Target: {output.target_role}</span>
         </div>
       )}
@@ -268,7 +268,7 @@ function InterviewPrepView({ output }) {
           {output.questions.map((q, i) => (
             <div key={i} className="p-3 bg-white border border-slate-200 rounded-lg">
               <div className="flex items-start gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#d97757] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <span className="w-5 h-5 rounded-full bg-[#2DC08D] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
                 <div>
                   <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${q.category === "behavioral" ? "bg-blue-50 text-blue-600" : q.category === "technical" ? "bg-purple-50 text-purple-600" : "bg-green-50 text-green-600"}`}>{q.category}</span>
                   <p className="text-xs text-slate-800 mt-1">{q.question}</p>
@@ -281,7 +281,7 @@ function InterviewPrepView({ output }) {
       )}
       {output.preparation_tips && (
         <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-          <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <Lightbulb className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-slate-700 leading-relaxed">{output.preparation_tips}</p>
         </div>
       )}
@@ -309,7 +309,7 @@ function MockInterviewView({ output }) {
       </div>
       {output.feedback && (
         <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-          <TrendingUp className="w-4 h-4 text-[#d97757] flex-shrink-0 mt-0.5" />
+          <TrendingUp className="w-4 h-4 text-[#2DC08D] flex-shrink-0 mt-0.5" />
           <p className="text-xs text-slate-700 leading-relaxed">{output.feedback}</p>
         </div>
       )}
@@ -329,14 +329,14 @@ function CareerPathView({ output }) {
   return (
     <div className="space-y-4">
       {output.target_role && (
-        <div className="flex items-center gap-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-          <Award className="w-4 h-4 text-[#d97757]" />
+        <div className="flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+          <Award className="w-4 h-4 text-[#2DC08D]" />
           <span className="text-xs font-medium text-slate-800">Target: {output.target_role}</span>
         </div>
       )}
       {output.skill_gaps?.length > 0 && (
         <Card>
-          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Target className="w-4 h-4 text-[#d97757]" /><CardTitle className="text-sm">Skill Gaps</CardTitle></div></CardHeader>
+          <CardHeader className="pb-2"><div className="flex items-center gap-1.5"><Target className="w-4 h-4 text-[#2DC08D]" /><CardTitle className="text-sm">Skill Gaps</CardTitle></div></CardHeader>
           <CardContent className="pt-0 space-y-2">
             {output.skill_gaps.map((sg, i) => (
               <div key={i} className="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg">
@@ -344,7 +344,7 @@ function CareerPathView({ output }) {
                   <p className="text-xs font-medium text-slate-800 truncate">{sg.skill}</p>
                   <p className="text-[10px] text-slate-400">{sg.current_level} &rarr; {sg.required_level}</p>
                 </div>
-                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ml-2 flex-shrink-0 ${sg.priority === "high" ? "bg-red-50 text-red-600" : "bg-amber-50 text-amber-600"}`}>{sg.priority}</span>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ml-2 flex-shrink-0 ${sg.priority === "high" ? "bg-red-50 text-red-600" : "bg-emerald-50 text-emerald-600"}`}>{sg.priority}</span>
               </div>
             ))}
           </CardContent>
@@ -369,8 +369,8 @@ function CareerPathView({ output }) {
       {output.learning_roadmap?.length > 0 && (
         <div className="space-y-3">
           {output.learning_roadmap.map((phase, i) => (
-            <div key={i} className="relative pl-5 border-l-2 border-[#d97757]">
-              <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[#d97757] flex items-center justify-center">
+            <div key={i} className="relative pl-5 border-l-2 border-[#2DC08D]">
+              <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[#2DC08D] flex items-center justify-center">
                 <span className="text-white text-[8px] font-bold">{i + 1}</span>
               </div>
               <div className="p-3 bg-white border border-slate-200 rounded-lg ml-2">
@@ -390,7 +390,7 @@ function CareerPathView({ output }) {
       )}
       {output.estimated_timeline && (
         <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-          <TrendingUp className="w-4 h-4 text-[#d97757] flex-shrink-0 mt-0.5" />
+          <TrendingUp className="w-4 h-4 text-[#2DC08D] flex-shrink-0 mt-0.5" />
           <p className="text-xs text-slate-700 leading-relaxed">{output.estimated_timeline}</p>
         </div>
       )}

@@ -52,7 +52,7 @@ export default function UploadPage({ onFileAnalyzed }) {
       </div>
       <div
         className={`relative group flex flex-col items-center justify-center py-14 px-6 border-2 border-dashed rounded-xl transition-colors duration-200 cursor-pointer ${
-          dragActive ? "border-[#d97757] bg-orange-50" : file ? "border-green-200 bg-green-50/50" : "border-slate-200 bg-slate-50 hover:bg-slate-100"
+          dragActive ? "border-[#2DC08D] bg-emerald-50" : file ? "border-green-200 bg-green-50/50" : "border-slate-200 bg-slate-50 hover:bg-slate-100"
         }`}
         onDragEnter={(e) => { e.preventDefault(); setDragActive(true); }}
         onDragLeave={(e) => { e.preventDefault(); setDragActive(false); }}
@@ -64,7 +64,7 @@ export default function UploadPage({ onFileAnalyzed }) {
           {!file ? (
             <motion.div key="upload" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col items-center text-center space-y-3 pointer-events-none">
               <div className="p-3 bg-white rounded-full shadow-sm border border-slate-100 group-hover:scale-110 transition-transform duration-200">
-                <UploadCloud className="w-7 h-7 text-[#d97757]" />
+                <UploadCloud className="w-7 h-7 text-[#2DC08D]" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-700">Click to upload <span className="font-normal text-slate-400">or drag and drop</span></p>

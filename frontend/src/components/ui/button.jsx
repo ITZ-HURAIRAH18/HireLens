@@ -4,7 +4,7 @@ import { cn } from "../../lib/utils"
 const buttonVariants = {
   base: "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   variants: {
-    default: "bg-[#d97757] text-white hover:bg-[#c46445]",
+    default: "bg-[#2DC08D] text-white hover:bg-[#26A37A]",
     secondary: "bg-white text-slate-900 border border-slate-200 hover:bg-slate-100",
     ghost: "hover:bg-slate-100 hover:text-slate-900",
     danger: "bg-red-600 text-white hover:bg-red-700",

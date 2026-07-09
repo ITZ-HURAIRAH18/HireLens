@@ -48,8 +48,8 @@ export default function Dashboard() {
   if (error) return <div className="text-center py-20 text-red-400">Failed to load: {error}</div>;
   if (!stats) return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="p-5 bg-orange-50 rounded-full mb-6">
-        <FileText className="w-10 h-10 text-[#d97757]" />
+      <div className="p-5 bg-emerald-50 rounded-full mb-6">
+        <FileText className="w-10 h-10 text-[#2DC08D]" />
       </div>
       <h2 className="text-2xl font-bold text-slate-800 mb-2">No Data Yet</h2>
       <p className="text-base text-slate-500 max-w-md">Upload your first resume to see your dashboard with ATS scores, analysis history, and more.</p>
@@ -74,7 +74,7 @@ export default function Dashboard() {
         </Card>
         <Card>
           <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-orange-50 text-[#d97757] rounded-full"><FileText className="w-8 h-8" /></div>
+            <div className="p-3 bg-emerald-50 text-[#2DC08D] rounded-full"><FileText className="w-8 h-8" /></div>
             <div>
               <p className="text-sm font-medium text-slate-500">Total Analyses</p>
               <h3 className="text-3xl font-bold text-slate-900">{stats.total_analyses ?? 0}</h3>

@@ -88,8 +88,8 @@ export default function AISuggestions({ sessionId }) {
 
   if (!sessionId) return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="p-5 bg-orange-50 rounded-full mb-6">
-        <Sparkles className="w-10 h-10 text-[#d97757]" />
+      <div className="p-5 bg-emerald-50 rounded-full mb-6">
+        <Sparkles className="w-10 h-10 text-[#2DC08D]" />
       </div>
       <h2 className="text-2xl font-bold text-slate-800 mb-2">No Resume Uploaded</h2>
       <p className="text-base text-slate-500 max-w-md">Upload a resume first to unlock AI agents that can analyze, optimize, and provide suggestions for your career.</p>
@@ -108,8 +108,8 @@ export default function AISuggestions({ sessionId }) {
           const Icon = agent.icon;
           const isActive = selectedAgent === agent.id;
           return (
-            <button key={agent.id} onClick={() => runAgent(agent.id)} className={`flex flex-col items-center gap-2 p-4 rounded-xl border text-left transition-all ${isActive ? "border-[#d97757] bg-orange-50 ring-2 ring-[#d97757]/20" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"}`}>
-              <div className={`p-2 rounded-lg ${isActive ? "bg-[#d97757] text-white" : "bg-slate-100 text-slate-600"}`}><Icon className="w-5 h-5" /></div>
+            <button key={agent.id} onClick={() => runAgent(agent.id)} className={`flex flex-col items-center gap-2 p-4 rounded-xl border text-left transition-all ${isActive ? "border-[#2DC08D] bg-emerald-50 ring-2 ring-[#2DC08D]/20" : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"}`}>
+              <div className={`p-2 rounded-lg ${isActive ? "bg-[#2DC08D] text-white" : "bg-slate-100 text-slate-600"}`}><Icon className="w-5 h-5" /></div>
               <span className="text-xs font-semibold text-slate-700 text-center leading-tight">{agent.label}</span>
               <span className="text-[10px] text-slate-400 text-center leading-tight hidden sm:block">{agent.desc}</span>
             </button>
@@ -128,9 +128,9 @@ export default function AISuggestions({ sessionId }) {
             )}
             {messages.map((msg, idx) => (
               <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex gap-4 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                {msg.role === "assistant" && <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1"><Sparkles className="w-4 h-4 text-[#d97757]" /></div>}
+                {msg.role === "assistant" && <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1"><Sparkles className="w-4 h-4 text-[#2DC08D]" /></div>}
                 <div className={`max-w-[90%] sm:max-w-[80%] rounded-2xl p-4 ${msg.role === "user" ? "bg-slate-900 text-white" : "bg-slate-50 border border-slate-100 text-slate-900"}`}>
-                  {msg.agent && <div className="text-xs font-semibold text-[#d97757] mb-2 uppercase tracking-wider">{AGENTS.find(a => a.id === msg.agent)?.label || msg.agent}</div>}
+                  {msg.agent && <div className="text-xs font-semibold text-[#2DC08D] mb-2 uppercase tracking-wider">{AGENTS.find(a => a.id === msg.agent)?.label || msg.agent}</div>}
                   {msg.output && msg.agent !== "chat" && msg.agent !== "cover_letter" ? (
                     <AgentOutputRenderer agent={msg.agent} output={msg.output} />
                   ) : (
@@ -142,7 +142,7 @@ export default function AISuggestions({ sessionId }) {
             ))}
             {isTyping && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-4 justify-start">
-                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 mt-1"><Sparkles className="w-4 h-4 text-[#d97757]" /></div>
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-1"><Sparkles className="w-4 h-4 text-[#2DC08D]" /></div>
                 <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: "0ms" }}></div>
                   <div className="w-2 h-2 rounded-full bg-slate-300 animate-bounce" style={{ animationDelay: "150ms" }}></div>
@@ -155,7 +155,7 @@ export default function AISuggestions({ sessionId }) {
         </div>
         <div className="p-4 bg-white border-t border-slate-100">
           <form onSubmit={handleSend} className="relative flex items-end gap-2 max-w-3xl mx-auto">
-            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder={selectedAgent ? `Ask ${AGENTS.find(a => a.id === selectedAgent)?.label}...` : "Type a message..."} className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#d97757] focus:border-transparent block p-4 transition-shadow" />
+            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder={selectedAgent ? `Ask ${AGENTS.find(a => a.id === selectedAgent)?.label}...` : "Type a message..."} className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-[#2DC08D] focus:border-transparent block p-4 transition-shadow" />
             <Button type="submit" disabled={!input.trim() || isTyping} className="h-[54px] w-[54px] rounded-xl flex-shrink-0">{isTyping ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}</Button>
           </form>
         </div>

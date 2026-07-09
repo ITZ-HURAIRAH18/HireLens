@@ -42,7 +42,7 @@
   transition: background 0.15s, transform 0.1s;
 }
 
-.jm-btn:hover { background: #d4b23a; }
+.jm-btn:hover { background: #2DC08D; }
 .jm-btn:active { transform: scale(0.98); }
 .jm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -117,7 +117,7 @@
 .jm-gap-skill { color: var(--subtle); flex: 1; }
 .jm-gap-importance { padding: 2px 8px; border-radius: 50px; font-size: 9px; text-transform: uppercase; }
 .jm-gap-importance--high { background: rgba(224,85,85,0.1); color: #e05555; }
-.jm-gap-importance--medium { background: rgba(232,197,71,0.1); color: var(--accent); }
+.jm-gap-importance--medium { background: rgba(45,192,141,0.1); color: var(--accent); }
 .jm-gap-importance--low { background: rgba(58,154,58,0.1); color: #5aac5a; }
 .jm-gap-category { color: var(--dim); }
 

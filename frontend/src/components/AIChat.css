@@ -124,7 +124,7 @@
   margin-left: auto;
   margin-bottom: 10px;
   font-size: 12px;
-  color: #b8a840;
+  color: #2DC08D;
   line-height: 1.6;
 }
 
@@ -218,7 +218,7 @@
 }
 
 .send-btn:hover:not(:disabled) {
-  background: #d4b23a;
+  background: #2DC08D;
 }
 
 .send-btn:disabled {

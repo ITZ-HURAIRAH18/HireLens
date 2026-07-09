@@ -106,7 +106,7 @@ export default function Compare() {
         <>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="relative w-full max-w-xs">
-              <select value={selectedIdx} onChange={(e) => { setSelectedIdx(Number(e.target.value)); setEnhanced(null); setOriginalScore(null); setEnhancedScore(null); }} className="w-full appearance-none border border-slate-200 rounded-lg p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#d97757] pr-8">
+              <select value={selectedIdx} onChange={(e) => { setSelectedIdx(Number(e.target.value)); setEnhanced(null); setOriginalScore(null); setEnhancedScore(null); }} className="w-full appearance-none border border-slate-200 rounded-lg p-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#2DC08D] pr-8">
                 {resumes.map((r, i) => (
                   <option key={r.id} value={i}>{r.filename} — {r.created_at ? new Date(r.created_at).toLocaleDateString() : ""}</option>
                 ))}
@@ -143,7 +143,7 @@ export default function Compare() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base flex items-center gap-2">
-                    {enhanced ? <Sparkles className="w-4 h-4 text-[#d97757]" /> : <Zap className="w-4 h-4 text-slate-300" />}
+                    {enhanced ? <Sparkles className="w-4 h-4 text-[#2DC08D]" /> : <Zap className="w-4 h-4 text-slate-300" />}
                     AI-Enhanced
                   </CardTitle>
                   {enhancedScore !== null && (
@@ -155,11 +155,11 @@ export default function Compare() {
               <CardContent className="pt-0">
                 {enhancing ? (
                   <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-                    <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#d97757]" />
+                    <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#2DC08D]" />
                     <p className="text-sm">AI is enhancing your resume...</p>
                   </div>
                 ) : enhanced ? (
-                  <div className="max-h-[500px] overflow-y-auto whitespace-pre-wrap text-xs text-slate-700 leading-relaxed font-mono bg-orange-50 rounded-lg p-4 border border-orange-200">
+                  <div className="max-h-[500px] overflow-y-auto whitespace-pre-wrap text-xs text-slate-700 leading-relaxed font-mono bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                     {enhanced.enhanced_text}
                   </div>
                 ) : (
@@ -190,14 +190,14 @@ export default function Compare() {
             <Card>
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-[#d97757]" />
+                  <TrendingUp className="w-5 h-5 text-[#2DC08D]" />
                   <CardTitle className="text-base">Keywords Added</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex flex-wrap gap-2">
                   {enhanced.keywords_added.map((kw, i) => (
-                    <span key={i} className="px-3 py-1.5 bg-orange-50 text-[#d97757] text-sm font-medium rounded-full border border-orange-200">{kw}</span>
+                    <span key={i} className="px-3 py-1.5 bg-emerald-50 text-[#2DC08D] text-sm font-medium rounded-full border border-emerald-200">{kw}</span>
                   ))}
                 </div>
               </CardContent>

@@ -79,8 +79,8 @@ function AppContent() {
               <Route path="/analysis" element={
                 analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="p-5 bg-orange-50 rounded-full mb-6">
-                      <FileText className="w-10 h-10 text-[#d97757]" />
+                    <div className="p-5 bg-emerald-50 rounded-full mb-6">
+                      <FileText className="w-10 h-10 text-[#2DC08D]" />
                     </div>
                     <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
                     <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>

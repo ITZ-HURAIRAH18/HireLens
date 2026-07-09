@@ -23,20 +23,20 @@ export default function MainLayout({ children }) {
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-slate-200 bg-white">
         <div className="flex flex-col flex-1 min-h-0">
           <div className="flex items-center h-16 flex-shrink-0 px-6 border-b border-slate-100">
-            <Hexagon className="w-8 h-8 text-[#d97757]" />
+            <Hexagon className="w-8 h-8 text-[#2DC08D]" />
             <span className="ml-3 text-xl font-semibold tracking-tight text-slate-900">HireLens</span>
           </div>
           <div className="flex-1 flex flex-col overflow-y-auto py-4">
             <nav className="flex-1 px-4 space-y-1">
               {navigation.map((item) => (
-                <NavLink key={item.name} to={item.href} className={({ isActive }) => cn(isActive ? "bg-orange-50 text-[#d97757]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900", "group flex items-center px-3 py-2 text-sm font-medium rounded-md")}>
+                <NavLink key={item.name} to={item.href} className={({ isActive }) => cn(isActive ? "bg-emerald-50 text-[#2DC08D]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900", "group flex items-center px-3 py-2 text-sm font-medium rounded-md")}>
                   <item.icon className={cn("mr-3 flex-shrink-0 h-5 w-5")} aria-hidden="true" />
                   {item.name}
                 </NavLink>
               ))}
             </nav>
             <div className="px-4 mt-auto pt-6 space-y-1">
-              <NavLink to="/settings" className={({ isActive }) => cn(isActive ? "bg-orange-50 text-[#d97757]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900", "group flex items-center px-3 py-2 text-sm font-medium rounded-md")}>
+              <NavLink to="/settings" className={({ isActive }) => cn(isActive ? "bg-emerald-50 text-[#2DC08D]" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900", "group flex items-center px-3 py-2 text-sm font-medium rounded-md")}>
                 <Settings className="mr-3 flex-shrink-0 h-5 w-5" />
                 Settings
               </NavLink>

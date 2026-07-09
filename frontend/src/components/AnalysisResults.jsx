@@ -14,8 +14,8 @@ const SCORE_LABELS = {
 export default function AnalysisResults({ analysis, fileName }) {
   if (!analysis) return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="p-5 bg-orange-50 rounded-full mb-6">
-        <FileText className="w-10 h-10 text-[#d97757]" />
+      <div className="p-5 bg-emerald-50 rounded-full mb-6">
+        <FileText className="w-10 h-10 text-[#2DC08D]" />
       </div>
       <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
       <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
@@ -76,7 +76,7 @@ export default function AnalysisResults({ analysis, fileName }) {
         <div className="relative w-24 h-24 flex-shrink-0">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
             <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e5e7eb" strokeWidth="3" />
-            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#d97757" strokeWidth="3"
+            <circle cx="18" cy="18" r="15.5" fill="none" stroke="#2DC08D" strokeWidth="3"
               strokeDasharray={`${atsScore}, 100`} strokeLinecap="round" />
           </svg>
           <span className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-slate-900">{atsScore}</span>
@@ -104,7 +104,7 @@ export default function AnalysisResults({ analysis, fileName }) {
                   <span className="text-sm font-bold text-slate-900">{val}<span className="text-xs font-normal text-slate-400">/100</span></span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-2">
-                  <div className="bg-[#d97757] h-2 rounded-full transition-all" style={{ width: `${val}%` }}></div>
+                  <div className="bg-[#2DC08D] h-2 rounded-full transition-all" style={{ width: `${val}%` }}></div>
                 </div>
                 <p className="text-xs text-slate-400 mt-2">{meta.desc}</p>
               </div>
@@ -149,7 +149,7 @@ export default function AnalysisResults({ analysis, fileName }) {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                <AlertTriangle className="w-5 h-5 text-emerald-500" />
                 <CardTitle>Areas to Improve</CardTitle>
               </div>
             </CardHeader>
@@ -157,7 +157,7 @@ export default function AnalysisResults({ analysis, fileName }) {
               <ul className="space-y-3">
                 {analysis.weaknesses.map((w, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
                     {w}
                   </li>
                 ))}
@@ -177,7 +177,7 @@ export default function AnalysisResults({ analysis, fileName }) {
             <div className="space-y-4">
               {analysis.improvement_tips.map((tip, i) => (
                 <div key={i} className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
-                  <span className="w-6 h-6 rounded-full bg-[#d97757] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                  <span className="w-6 h-6 rounded-full bg-[#2DC08D] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
                   <p className="text-sm text-slate-700">{tip}</p>
                 </div>
               ))}

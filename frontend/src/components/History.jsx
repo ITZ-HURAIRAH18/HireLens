@@ -32,7 +32,7 @@ export default function History() {
           <div className="p-4 border-b border-slate-200 bg-slate-50/50">
             <div className="relative w-full sm:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Search resumes..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#d97757] focus:border-transparent" />
+              <input type="text" placeholder="Search resumes..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2DC08D] focus:border-transparent" />
             </div>
           </div>
           {loading ? (
@@ -69,7 +69,7 @@ export default function History() {
                     <tr key={i} className="bg-white hover:bg-slate-50/80 transition-colors">
                       <td className="px-6 py-4 font-medium text-slate-900">{item.filename || "Unknown"}</td>
                       <td className="px-6 py-4">{item.date ? new Date(item.date).toLocaleDateString() : "—"}</td>
-                      <td className="px-6 py-4"><span className={`px-2 py-1 rounded-md font-medium text-xs ${(item.score || 0) >= 80 ? "bg-green-100 text-green-700" : "bg-orange-100 text-orange-700"}`}>{item.score ?? "—"}</span></td>
+                      <td className="px-6 py-4"><span className={`px-2 py-1 rounded-md font-medium text-xs ${(item.score || 0) >= 80 ? "bg-green-100 text-green-700" : "bg-emerald-100 text-emerald-700"}`}>{item.score ?? "—"}</span></td>
                     </tr>
                   ))}
                 </tbody>
