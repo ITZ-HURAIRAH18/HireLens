@@ -37,9 +37,19 @@ html, body, #root {
   padding: 0;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 ::selection {
   background-color: var(--color-brand-orange-light);
   color: var(--color-brand-orange);
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.333%); }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
 }

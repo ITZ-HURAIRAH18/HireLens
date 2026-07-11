@@ -4,7 +4,7 @@ import { cn } from "../../lib/utils";
 import { useAuth } from "../../lib/auth";
 
 const navigation = [
-  { name: "Upload Resume", href: "/", icon: Upload },
+  { name: "Upload Resume", href: "/upload", icon: Upload },
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Analysis", href: "/analysis", icon: FileText },
   { name: "AI Suggestions", href: "/suggestions", icon: MessageSquare },

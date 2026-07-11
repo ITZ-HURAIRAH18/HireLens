@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "r
 import { FileText } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import MainLayout from "./components/layout/MainLayout";
+import Homepage from "./components/Homepage";
 import UploadPage from "./components/UploadPage";
 import AnalysisResults from "./components/AnalysisResults";
 import Dashboard from "./components/Dashboard";
@@ -66,36 +67,29 @@ function AppContent() {
     }
   }, [navigate]);
 
+  const analysisFallback = (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="p-5 bg-emerald-50 rounded-full mb-6">
+        <FileText className="w-10 h-10 text-[#2DC08D]" />
+      </div>
+      <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
+      <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
+    </div>
+  );
+
   return (
     <Routes>
       <Route path="/login" element={<PublicRoute><Auth mode="login" /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><Auth mode="register" /></PublicRoute>} />
-      <Route path="/*" element={
-        <ProtectedRoute>
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<UploadPage onFileAnalyzed={handleFileAnalyzed} />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/analysis" element={
-                analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : (
-                  <div className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="p-5 bg-emerald-50 rounded-full mb-6">
-                      <FileText className="w-10 h-10 text-[#2DC08D]" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">No Analysis Yet</h2>
-                    <p className="text-base text-slate-500 max-w-md">Upload a resume from the home page to see your AI-powered ATS analysis and score breakdown.</p>
-                  </div>
-                )
-              } />
-              <Route path="/suggestions" element={<AISuggestions sessionId={sessionId} />} />
-              <Route path="/compare" element={<Compare />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </MainLayout>
-        </ProtectedRoute>
-      } />
+      <Route path="/" element={<Homepage onFileAnalyzed={handleFileAnalyzed} />} />
+      <Route path="/upload" element={<ProtectedRoute><MainLayout><UploadPage onFileAnalyzed={handleFileAnalyzed} /></MainLayout></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+      <Route path="/analysis" element={<ProtectedRoute><MainLayout>{analysisData ? <AnalysisResults analysis={analysisData} fileName={fileName} /> : analysisFallback}</MainLayout></ProtectedRoute>} />
+      <Route path="/suggestions" element={<ProtectedRoute><MainLayout><AISuggestions sessionId={sessionId} /></MainLayout></ProtectedRoute>} />
+      <Route path="/compare" element={<ProtectedRoute><MainLayout><Compare /></MainLayout></ProtectedRoute>} />
+      <Route path="/history" element={<ProtectedRoute><MainLayout><History /></MainLayout></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

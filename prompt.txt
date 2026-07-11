@@ -1,2 +1,171 @@
-rgb(45,192,141)
-#2DC08D
+# HireLens — Animated Landing Page Prompt (White & Green, Professional SaaS)
+
+Copy everything below into Antigravity/your AI coding tool as task instructions. This replaces the current homepage — the current mockup card is too crowded (9 checklist rows feels noisy); this version simplifies it and adds proper motion polish.
+
+---
+
+## OVERVIEW
+
+Build the HireLens landing page using React, TypeScript, Tailwind CSS, Framer Motion, and Lucide React. This is a **professional AI resume-analysis SaaS product**, not a creative portfolio — the animation should feel restrained, confident, and "expensive," never playful or flashy. White background, green accent only. Work inside the existing repo's file/folder structure.
+
+---
+
+## GLOBAL STYLES
+
+- Background: `#FFFFFF` on `body`, `#root`, and the main wrapper. No dark sections.
+- Font: Inter or Manrope (Google Fonts), weights 400–800. Do not use a display/creative font — this needs to read as enterprise software.
+- Accent green: define one primary green (e.g. `#16A34A` or match existing brand green already used in the repo's "Lens" wordmark) — used only for: primary buttons, active nav state, progress rings, checkmarks, pass badges, links, and the logo's second word.
+- Text colors: near-black `#0F1115` (primary), medium gray `#5B6470` (secondary), light gray `#9AA3AF` (muted).
+- Global reset: box-sizing border-box, consistent 8-point spacing scale throughout.
+- No gradients on backgrounds. No glassmorphism. No colored shadows. Borders are thin and light gray (`#E5E7EB`).
+
+---
+
+## REUSABLE ANIMATION COMPONENTS (build these first)
+
+**FadeIn wrapper**
+- Framer Motion component using `whileInView`, `viewport={{ once: true, margin: "-80px", amount: 0.2 }}`
+- Props: `delay` (default 0), `duration` (default 0.6), `y` (default 16, distance to rise from)
+- Easing: `[0.25, 0.1, 0.25, 1]`
+- Used to wrap every major section/element on scroll — subtle rise + fade, never slide from the side, never scale-bounce.
+
+**AnimatedCounter**
+- Counts a number up from 0 to a target value (e.g. resume score `78`) when it scrolls into view.
+- Duration ~1.2s, easeOut, triggers once via `whileInView`.
+
+**AnimatedProgressRing**
+- SVG circular progress ring (used for the resume score gauge). The stroke draws in from 0 to the target percentage using `strokeDashoffset` animated by Framer Motion, synced to start at the same time as AnimatedCounter. Green stroke, light gray track underneath. Duration ~1.2s, easeOut.
+
+**MarqueeRow**
+- Horizontal infinite-scroll row (used for trust logos). Duplicate the logo list 2–3x for seamless looping. Very slow, constant linear speed (no scroll-linked motion needed here — this is a simple CSS/Framer `animate` loop, not scroll-driven like the 3D portfolio reference). Pauses on hover.
+
+---
+
+## SECTION ORDER
+
+1. Navbar
+2. Hero (headline + upload + live mockup)
+3. How It Works
+4. Trust Marquee
+5. Feature Highlights (3-column)
+6. Footer
+
+---
+
+## 1. NAVBAR
+
+Sticky top, white background, thin bottom border (`#E5E7EB`), `px-6 md:px-10 py-4`.
+
+- Logo left: "Hire" in near-black bold + "Lens" in green bold, same font, no gap
+- Center nav links: "Resume Checker", "Tools" (dropdown chevron), "For Organizations", "Pricing" — gray text, hover transitions to near-black, 200ms
+- Right: "Sign in" (outline button, gray border) + "Get Started" (solid green button, white text)
+- FadeIn: whole navbar, delay 0, y -12
+
+---
+
+## 2. HERO SECTION
+
+Two-column layout, `py-16 md:py-24`, max content width ~1280px centered.
+
+### Left column
+
+- Eyebrow badge: small pill, light green background (`green/10` opacity), green dot + green uppercase small text: "AI-POWERED RESUME ANALYSIS". FadeIn delay 0.
+- Headline (two lines): Line 1 "Your resume," in near-black bold, Line 2 "decoded." in green, italic or lightly accented. Large, font-black, tight tracking. FadeIn delay 0.1, y 20.
+- Subheadline: one sentence, gray text, ~18-20px: "Get instant AI feedback, ATS scoring, and a personal career coach to help you land more interviews." FadeIn delay 0.2.
+- **Upload dropzone card:** dashed border, rounded-2xl, generous padding, centered content:
+  - Circular light-green icon badge with upload icon (Lucide `UploadCloud`), subtle idle float animation (very slight up/down loop, 3s, barely noticeable — not attention-grabbing)
+  - "Drop your resume here" (bold) + "or click to browse files" (muted)
+  - Solid green "Choose File" button — on hover, slight lift (`translateY(-2px)`) + shadow increase, 200ms
+  - Helper text below: "PDF · DOCX · Max 2MB"
+  - On drag-over: border and background tint shift to green, smooth 150ms transition
+  - FadeIn delay 0.3, y 20
+
+### Right column — Live mockup card
+
+This is the most important fix: **simplify from 9 rows to 6 max**, tighter and cleaner, with clear visual hierarchy.
+
+- Card: white background, thin border, soft shadow, rounded-2xl, browser-window style top bar with 3 small dots (red/amber/green, muted not saturated) + "HireLens · Resume Analysis" label centered/left
+- Inside, two-column layout:
+  - **Left:** AnimatedProgressRing showing score (e.g. 78/100) using AnimatedCounter for the number, "Resume Score" label below in gray
+  - **Right:** a checklist of exactly **6 items** (not 9 — drop to the most representative ones): ATS Parse Rate, Quantifying Impact, Spelling & Grammar, Format & Brevity, Sections, Skills. Each row: Lucide check/warning/x icon (green/amber/red respectively, small and subtle) + label + small status badge on the right (Pass/Warn/Fail — soft pill background, not harsh saturated colors)
+  - Checklist rows fade/stagger in one at a time, `staggerChildren: 0.08`, after the ring/counter finishes animating — not all crowded in at once
+  - Generous row spacing (`py-3` minimum between rows) so it doesn't feel dense
+- FadeIn delay 0.4, y 24, whole card
+
+---
+
+## 3. HOW IT WORKS
+
+Light gray-white section (`#FAFAFA` or similar very subtle tint), `py-20`, centered content.
+
+- Heading: "How it works" bold, centered
+- Subheading: "Three simple steps to a better resume" — gray, centered
+- 3-column row, each with: circular light-green numbered badge (01/02/03), bold title, gray description
+  - 01 Upload — "Drop your resume in PDF or DOCX format. We support any layout."
+  - 02 AI Analysis — "Our AI parses your resume against 9 ATS criteria in seconds."
+  - 03 Get Feedback — "Receive a detailed score report with actionable improvement tips."
+- Staggered FadeIn: each column delay `i * 0.12`, y 20
+
+---
+
+## 4. TRUST MARQUEE
+
+Thin section beneath How It Works, white background.
+
+- Small centered uppercase muted label: "TRUSTED BY JOB SEEKERS AT"
+- MarqueeRow of company wordmarks/logos (grayscale, low opacity `~30%`, hover brightens to 60%), continuous slow scroll
+- If no real logos yet, use placeholder text wordmarks (Google, Meta, Amazon, Microsoft, Stripe) styled as muted gray text, not fake logo graphics
+
+---
+
+## 5. FEATURE HIGHLIGHTS (3-column)
+
+`py-20`, white background.
+
+3 cards in a row (stack on mobile), each: icon in light-green circle badge (Lucide icons — `Target` for ATS Score, `Search` for Gap Analysis, `MessageSquare` for AI Coach), bold title, 1-line gray description. Thin border, rounded-xl, subtle hover lift (`translateY(-4px)`, shadow increase, 200ms).
+
+- ATS Score — "Pass filters"
+- Gap Analysis — "Missing keywords"
+- AI Coach — "Ask anything"
+
+FadeIn stagger, `i * 0.1`, y 16.
+
+---
+
+## 6. FOOTER
+
+White background, thin top border, `py-10`, `justify-between` row (stack on mobile).
+
+- Left: "Hire" + "Lens" logo mark, smaller
+- Right: "© 2026 HireLens. All rights reserved."
+
+No FadeIn needed here — footer is static.
+
+---
+
+## MOTION PRINCIPLES (apply throughout)
+
+- Every animation triggers once via `whileInView` — never re-plays on scroll up/down repeatedly.
+- Nothing bounces, spins unnecessarily, or overshoots. Easing is always smooth ease-out.
+- Animations should feel like content settling into place, not "performing" for the user.
+- No animation should delay the user from being able to click "Choose File" or "Get Started" — interactive elements must be functional immediately even mid-animation.
+- Respect `prefers-reduced-motion` — disable non-essential motion (marquee, floating icon, stagger) for users with that setting, falling back to instant appearance.
+
+---
+
+## TECH REQUIREMENTS
+
+- React + TypeScript, Tailwind CSS, Framer Motion, Lucide React
+- Reuse existing Button/Card/Badge components from the repo if they already exist — don't duplicate
+- Fully responsive: hero collapses to single column on mobile (upload card first, mockup card below), marquee and 3-column sections stack cleanly
+- Wire "Choose File" to the actual upload logic already used elsewhere in the app — not a placeholder
+- Keep the whole page performant: lazy-load below-the-fold sections' animations, use `will-change: transform` only where actively animating
+
+---
+
+## WORKFLOW
+
+1. Build the reusable animation components first (FadeIn, AnimatedCounter, AnimatedProgressRing, MarqueeRow) and show me a quick isolated preview/demo of each.
+2. Then build the page section by section in the order listed above, starting with Navbar + Hero.
+3. Show me the Hero section (with the simplified 6-row mockup card) before proceeding to the rest — this is the section that needed the most fixing.
+4. After each section, give a short summary of what was built and which files were touched.
