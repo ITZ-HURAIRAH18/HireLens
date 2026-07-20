@@ -2,24 +2,24 @@
 @import "react-loading-skeleton/dist/skeleton.css";
 
 @theme {
-  --color-brand-orange: #2DC08D;
-  --color-brand-orange-hover: #26A37A;
-  --color-brand-orange-light: #EAF9F4;
-  
+  --color-brand-green: #2DC08D;
+  --color-brand-green-hover: #26A37A;
+  --color-brand-green-light: #EAF9F4;
+
   --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fafb;
+  --color-bg-secondary: #fafafa;
   --color-bg-card: #ffffff;
-  
-  --color-text-primary: #0f1115;
-  --color-text-secondary: #4b5563;
-  --color-text-muted: #9ca3af;
-  
-  --color-border-light: #e5e7eb;
-  --color-border-medium: #d1d5db;
-  
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
+
+  --color-text-primary: #0F1115;
+  --color-text-secondary: #5B6470;
+  --color-text-muted: #9AA3AF;
+
+  --color-border-light: #E5E7EB;
+  --color-border-medium: #D1D5DB;
+
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
@@ -27,22 +27,21 @@
   --radius-xl: 1rem;
 }
 
-
-
-/* Base custom styles to ensure consistency with the requested layout */
 html, body, #root {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  background-color: #FFFFFF;
+  color: #0F1115;
   font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background-color: var(--color-brand-orange-light);
-  color: var(--color-brand-orange);
+  background-color: var(--color-brand-green-light);
+  color: var(--color-brand-green);
 }
 
 @keyframes marquee {
@@ -52,4 +51,11 @@ html, body, #root {
 
 .animate-marquee {
   animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
 }

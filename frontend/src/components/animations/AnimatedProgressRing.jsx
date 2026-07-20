@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import AnimatedCounter from "./AnimatedCounter";
 
 export default function AnimatedProgressRing({ percentage = 78, size = 112, strokeWidth = 8, duration = 1.2 }) {
   const [inView, setInView] = useState(false);
@@ -33,7 +34,7 @@ export default function AnimatedProgressRing({ percentage = 78, size = 112, stro
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#e5e7eb"
+          stroke="#E5E7EB"
           strokeWidth={strokeWidth}
         />
         <motion.circle
@@ -49,8 +50,10 @@ export default function AnimatedProgressRing({ percentage = 78, size = 112, stro
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold text-slate-800">{percentage}</span>
-        <span className="text-xs text-slate-400 mt-0.5">/ 100</span>
+        <span className="text-2xl font-bold text-[#0F1115]">
+          <AnimatedCounter target={percentage} />
+        </span>
+        <span className="text-xs text-[#9AA3AF] mt-0.5">/ 100</span>
       </div>
     </div>
   );

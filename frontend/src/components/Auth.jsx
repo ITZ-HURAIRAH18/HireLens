@@ -24,7 +24,7 @@ export default function Auth({ mode = "login" }) {
       } else {
         await signup(email, password, fullName);
       }
-      navigate("/");
+      navigate("/upload");
     } catch (err) {
       setError(err.response?.data?.detail || "Something went wrong");
     }
