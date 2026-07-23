@@ -1,16 +1,6 @@
-Request URL
-http://localhost:8000/api/v1/auth/signup
-Referrer Policy
-strict-origin-when-cross-origin
-accept
-*/*
-access-control-request-headers
-content-type
-access-control-request-method
-POST
-origin
-https://hire-lensz.vercel.app
-sec-fetch-mode
-cors
-user-agent
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36
+0%
+Job Match
+
+Weak match
+
+The job description was not provided, therefore a comprehensive match analysis cannot be performed. Please paste the job description to receive an accurate assessment of how well the resume aligns with the requirements.

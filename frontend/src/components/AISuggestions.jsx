@@ -29,6 +29,18 @@ export default function AISuggestions({ sessionId }) {
 
   const runAgent = async (agentId, userMsg = "") => {
     setSelectedAgent(agentId);
+
+    if (agentId === "job_match" && !userMsg.trim()) {
+      setError("Please paste a job description in the input field first, then click Job Match.");
+      setIsTyping(false);
+      return;
+    }
+    if (agentId === "mock_interview" && !userMsg.trim()) {
+      setError("Please type your interview answer in the input field first, then click Mock Interview.");
+      setIsTyping(false);
+      return;
+    }
+
     setIsTyping(true);
     setError(null);
     try {
@@ -42,10 +54,7 @@ export default function AISuggestions({ sessionId }) {
       };
 
       if (agentId === "job_match" || agentId === "cover_letter") {
-        payload.job_description = userMsg || "Paste a job description to match against";
-      }
-      if (agentId === "mock_interview") {
-        payload.user_message = userMsg || "Ask me a mock interview question";
+        payload.job_description = userMsg;
       }
 
       const { data } = await invokeAgent(payload);
