@@ -1,29 +1,51 @@
-hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4652
-hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1
-inject.bundle.js:218 [ChromePolyfill] Chrome API support enabled for web context
-Unchecked runtime.lastError: The message port closed before a response was received.
-Unchecked runtime.lastError: The message port closed before a response was received.
-Unchecked runtime.lastError: The message port closed before a response was received.
-Unchecked runtime.lastError: The message port closed before a response was received.
-Unchecked runtime.lastError: The message port closed before a response was received.
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4655
-hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1
-hook.bundle.js:1 [locatorjs]: No valid renderers found.
-o @ hook.bundle.js:1
-hook.bundle.js:1 [locatorjs]: No valid renderers found.
-o @ hook.bundle.js:1
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4656
-login:1 Access to XMLHttpRequest at 'https://hire-lens-five.vercel.app/api/v1/auth/login' from origin 'https://hire-lensz.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hire-lens-five.vercel.app/api/v1/auth/login:1  Failed to load resource: net::ERR_FAILED
-login:1  Failed to load resource: the server responded with a status of 404 ()
-login:1 Access to XMLHttpRequest at 'https://hire-lens-five.vercel.app/api/v1/auth/login' from origin 'https://hire-lensz.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hire-lens-five.vercel.app/api/v1/auth/login:1  Failed to load resource: net::ERR_FAILED
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4657
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4662
-inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 4666
-login:1 Access to XMLHttpRequest at 'https://hire-lens-five.vercel.app/api/v1/auth/login' from origin 'https://hire-lensz.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hire-lens-five.vercel.app/api/v1/auth/login:1  Failed to load resource: net::ERR_FAILED
+login
+login
+2 requests
+0 B transferred
+0 B resources
+Request URL
+https://hire-lens-five.vercel.app/api/v1/auth/login
+Request Method
+OPTIONS
+Status Code
+500 Internal Server Error
+Remote Address
+216.198.79.195:443
+Referrer Policy
+strict-origin-when-cross-origin
+:authority
+hire-lens-five.vercel.app
+:method
+OPTIONS
+:path
+/api/v1/auth/login
+:scheme
+https
+accept
+*/*
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en-US,en;q=0.9,ur;q=0.8,bn;q=0.7
+access-control-request-headers
+content-type
+access-control-request-method
+POST
+cache-control
+no-cache
+origin
+https://hire-lensz.vercel.app
+pragma
+no-cache
+priority
+u=1, i
+referer
+https://hire-lensz.vercel.app/
+sec-fetch-dest
+empty
+sec-fetch-mode
+cors
+sec-fetch-site
+cross-site
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36
