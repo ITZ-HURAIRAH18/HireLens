@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     redis_url: str = "redis://localhost:6379/0"
 
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://hire-lensz.vercel.app"
 
     model_config = SettingsConfigDict(
         env_file=".env",
