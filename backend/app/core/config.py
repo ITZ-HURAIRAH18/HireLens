@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     app_name: str = "Hire Lens Backend"
     environment: str = "development"
     openai_api_key: str | None = None
-    google_api_key: str
+    google_api_key: str = ""
 
     database_url: str = "postgresql://postgres:postgres@localhost:5432/hirelens"
     secret_key: str = "change-this-to-a-random-secret-key"

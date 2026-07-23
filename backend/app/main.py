@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +9,9 @@ from app.api.v1.router import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
+    # Only run DB table creation locally, not in Vercel serverless environment
+    if not os.getenv("VERCEL"):
+        Base.metadata.create_all(bind=engine)
     yield
 
 
