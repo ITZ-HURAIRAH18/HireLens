@@ -21,6 +21,8 @@ def create_app() -> FastAPI:
     )
 
     cors_origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
+    if "https://hire-lensz.vercel.app" not in cors_origins:
+        cors_origins.append("https://hire-lensz.vercel.app")
     app.add_middleware(
         CORSMiddleware,
         allow_origins=cors_origins,
