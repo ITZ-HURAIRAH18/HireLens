@@ -1,0 +1,78 @@
+From 57600fa0b3cb5c19261c0df159ccfa8443097549 Mon Sep 17 00:00:00 2001
+From: ITZ-HURAIRAH18 <muhammadabuhurairah558@gmail.com>
+Date: Thu, 23 Jul 2026 17:46:36 +0500
+Subject: [PATCH] feat: implement AISuggestions component for interacting with
+ resume analysis agents
+
+---
+ frontend/src/components/AISuggestions.jsx | 17 +++++++++++++----
+ prompt.txt                                | 22 ++++++----------------
+ 2 files changed, 19 insertions(+), 20 deletions(-)
+
+diff --git a/frontend/src/components/AISuggestions.jsx b/frontend/src/components/AISuggestions.jsx
+index 5481f10..513e796 100644
+--- a/frontend/src/components/AISuggestions.jsx
++++ b/frontend/src/components/AISuggestions.jsx
+@@ -29,6 +29,18 @@ export default function AISuggestions({ sessionId }) {
+ 
+   const runAgent = async (agentId, userMsg = "") => {
+     setSelectedAgent(agentId);
++
++    if (agentId === "job_match" && !userMsg.trim()) {
++      setError("Please paste a job description in the input field first, then click Job Match.");
++      setIsTyping(false);
++      return;
++    }
++    if (agentId === "mock_interview" && !userMsg.trim()) {
++      setError("Please type your interview answer in the input field first, then click Mock Interview.");
++      setIsTyping(false);
++      return;
++    }
++
+     setIsTyping(true);
+     setError(null);
+     try {
+@@ -42,10 +54,7 @@ export default function AISuggestions({ sessionId }) {
+       };
+ 
+       if (agentId === "job_match" || agentId === "cover_letter") {
+-        payload.job_description = userMsg || "Paste a job description to match against";
+-      }
+-      if (agentId === "mock_interview") {
+-        payload.user_message = userMsg || "Ask me a mock interview question";
++        payload.job_description = userMsg;
+       }
+ 
+       const { data } = await invokeAgent(payload);
+diff --git a/prompt.txt b/prompt.txt
+index 70b16e2..bff08ef 100644
+--- a/prompt.txt
++++ b/prompt.txt
+@@ -1,16 +1,6 @@
+-Request URL
+-http://localhost:8000/api/v1/auth/signup
+-Referrer Policy
+-strict-origin-when-cross-origin
+-accept
+-*/*
+-access-control-request-headers
+-content-type
+-access-control-request-method
+-POST
+-origin
+-https://hire-lensz.vercel.app
+-sec-fetch-mode
+-cors
+-user-agent
+-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36
+\ No newline at end of file
++0%
++Job Match
++
++Weak match
++
++The job description was not provided, therefore a comprehensive match analysis cannot be performed. Please paste the job description to receive an accurate assessment of how well the resume aligns with the requirements.
+\ No newline at end of file
+-- 
+2.53.0.windows.3
+
