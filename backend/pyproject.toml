@@ -3,6 +3,7 @@ name = "hire-lens-backend"
 version = "0.1.0"
 description = "Backend for Hire Lens Resume Checker (Agentic AI)"
 authors = ["Your Name <you@example.com>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
