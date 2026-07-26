@@ -26,7 +26,14 @@ export default function Auth({ mode = "login" }) {
       }
       navigate("/upload");
     } catch (err) {
-      setError(err.response?.data?.detail || "Something went wrong");
+      console.error("Login error:", err);
+      if (err.response) {
+        setError(err.response.data?.detail || "Server error. Please try again.");
+      } else if (err.request) {
+        setError("Cannot reach the server. Check if the backend is running.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
     setBusy(false);
   };
