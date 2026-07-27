@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   UploadCloud, FileText, AlertCircle, CheckCircle2, Loader2,
@@ -30,6 +30,56 @@ const fadeItem = {
   initial: { opacity: 0, y: 4 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
 };
+
+const heroContainer = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15, delayChildren: 0.3, ease: [0.25, 0.1, 0.25, 1] },
+  },
+};
+
+const heroItem = {
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
+};
+
+function LoadingScreen({ onComplete }) {
+  useEffect(() => {
+    const t = setTimeout(() => onComplete(), 900);
+    return () => clearTimeout(t);
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-white"
+    >
+      <div className="flex flex-col items-center gap-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="w-10 h-10 rounded-lg bg-[#2DC08D] flex items-center justify-center"
+        >
+          <span className="text-lg font-black text-white">H</span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          className="flex items-baseline gap-0.5"
+        >
+          <span className="text-base font-bold text-[#0F1115]">Hire</span>
+          <span className="text-base font-bold text-[#2DC08D]">Lens</span>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
 
 function StatusIcon({ status }) {
   if (status === "pass") return <Check className="w-3.5 h-3.5 text-green-600 shrink-0" />;
@@ -122,6 +172,7 @@ export default function Homepage({ onFileAnalyzed }) {
   const [uploading, setUploading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
   const reduced = useReducedMotion();
   const fileInputRef = useRef(null);
 
@@ -167,9 +218,18 @@ export default function Homepage({ onFileAnalyzed }) {
     }
   };
 
+  if (!pageReady && !reduced) {
+    return <LoadingScreen onComplete={() => setPageReady(true)} />;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
-      <header className="sticky top-0 z-50 bg-white border-b border-[#E5E7EB] shadow-sm">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen bg-white"
+    >
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[#E5E7EB]">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-10">
@@ -243,30 +303,40 @@ export default function Homepage({ onFileAnalyzed }) {
         </div>
       </header>
 
-      <section className="py-10 md:py-14">
-        <div className="max-w-4xl mx-auto px-6 md:px-10 text-center">
-          <FadeIn delay={0}>
-            <div className="inline-flex items-center gap-1.5 bg-[#2DC08D]/10 text-[#2DC08D] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#2DC08D]/20 mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#2DC08D]" />
-              AI-POWERED RESUME ANALYSIS
-            </div>
-          </FadeIn>
+      <section className="relative py-10 md:py-14 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-[#2DC08D]/5 via-[#2DC08D]/3 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-1/4 -left-32 w-72 h-72 bg-gradient-to-br from-[#2DC08D]/8 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-1/3 -right-32 w-80 h-80 bg-gradient-to-bl from-emerald-400/8 to-transparent rounded-full blur-3xl" />
+        </div>
+        <div className="max-w-4xl mx-auto px-6 md:px-10 text-center relative">
+          <motion.div
+            variants={reduced ? {} : heroContainer}
+            initial="initial"
+            animate="animate"
+          >
+            <motion.div variants={heroItem}>
+              <div className="inline-flex items-center gap-1.5 bg-[#2DC08D]/10 text-[#2DC08D] text-xs font-semibold px-3 py-1.5 rounded-full border border-[#2DC08D]/20 mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#2DC08D] animate-pulse" />
+                AI-POWERED RESUME ANALYSIS
+              </div>
+            </motion.div>
 
-          <FadeIn delay={0.1} y={20}>
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight text-[#0F1115] leading-[1.05]">
-              Your resume,{" "}
-              <span className="text-[#2DC08D] italic font-black">decoded.</span>
-            </h1>
-          </FadeIn>
+            <motion.div variants={heroItem}>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight text-[#0F1115] leading-[1.05]">
+                Your resume,{" "}
+                <span className="text-[#2DC08D] italic font-black">decoded.</span>
+              </h1>
+            </motion.div>
 
-          <FadeIn delay={0.2} y={20}>
-            <p className="text-base sm:text-lg text-[#5B6470] max-w-xl mx-auto mt-4 leading-relaxed">
-              Get instant AI feedback, ATS scoring, and a personal career coach to help you land more interviews.
-            </p>
-          </FadeIn>
+            <motion.div variants={heroItem}>
+              <p className="text-base sm:text-lg text-[#5B6470] max-w-xl mx-auto mt-4 leading-relaxed">
+                Get instant AI feedback, ATS scoring, and a personal career coach to help you land more interviews.
+              </p>
+            </motion.div>
 
-          {user ? (
-            <FadeIn delay={0.3} y={20}>
+          <motion.div variants={heroItem}>
+            {user ? (
               <div className="mt-8 max-w-md mx-auto">
                 <div
                   id="upload-zone"
@@ -343,9 +413,7 @@ export default function Homepage({ onFileAnalyzed }) {
                   </motion.div>
                 )}
               </div>
-            </FadeIn>
-          ) : (
-            <FadeIn delay={0.3} y={20}>
+            ) : (
               <div className="mt-8 max-w-sm mx-auto">
                 <div className="border-2 border-[#E5E7EB] rounded-2xl p-8 text-center hover:border-[#2DC08D]/50 hover:shadow-md transition-all duration-200">
                   <div className="p-3 bg-[#2DC08D]/10 rounded-full mx-auto w-fit mb-4">
@@ -359,41 +427,45 @@ export default function Homepage({ onFileAnalyzed }) {
                   </Button>
                 </div>
               </div>
-            </FadeIn>
-          )}
+            )}
+          </motion.div>
 
-          <FadeIn delay={0.5} y={20}>
+          <motion.div variants={heroItem}>
             <div className="mt-8">
               <ProductMockup />
             </div>
-          </FadeIn>
+          </motion.div>
+
+          </motion.div>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="border-t border-[#E5E7EB]" />
+        <div className="h-px bg-gradient-to-r from-transparent via-[#2DC08D]/20 to-transparent" />
       </div>
 
-      <section className="py-12 bg-[#FAFAFA]">
+      <section className="py-16 bg-[#FAFAFA]">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <FadeIn>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#0F1115]">How it works</h2>
-              <p className="text-sm text-[#5B6470] mt-1">Three simple steps to a better resume</p>
+            <div className="text-center mb-10">
+              <span className="text-[10px] font-semibold text-[#2DC08D] uppercase tracking-[0.2em]">Process</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#0F1115] mt-2">How it works</h2>
+              <p className="text-sm text-[#5B6470] mt-1.5">Three simple steps to a better resume</p>
             </div>
           </FadeIn>
-          <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+          <div className="relative grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            <div className="hidden sm:block absolute top-8 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-[#2DC08D]/40 via-[#2DC08D] to-[#2DC08D]/40" />
             {[
               { step: "01", title: "Upload", desc: "Drop your resume in PDF or DOCX format. We support any layout." },
               { step: "02", title: "AI Analysis", desc: "Our AI parses your resume against 9 ATS criteria in seconds." },
               { step: "03", title: "Get Feedback", desc: "Receive a detailed score report with actionable improvement tips." },
             ].map((item, i) => (
               <FadeIn key={item.step} delay={i * 0.12} y={20}>
-                <div className="text-center p-5 rounded-xl border border-[#E5E7EB] bg-white shadow-sm hover:shadow-md transition-shadow">
-                  <div className="w-10 h-10 rounded-full bg-[#2DC08D]/10 flex items-center justify-center mx-auto mb-3">
-                    <span className="text-sm font-bold text-[#2DC08D]">{item.step}</span>
+                <div className="relative text-center p-6 rounded-xl border border-[#E5E7EB] bg-white shadow-sm hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#2DC08D] to-emerald-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#2DC08D]/20 group-hover:shadow-xl group-hover:shadow-[#2DC08D]/30 transition-shadow">
+                    <span className="text-base font-bold text-white">{item.step}</span>
                   </div>
-                  <h3 className="font-semibold text-[#0F1115] text-sm mb-1">{item.title}</h3>
+                  <h3 className="font-semibold text-[#0F1115] text-sm mb-1.5">{item.title}</h3>
                   <p className="text-xs text-[#5B6470] leading-relaxed">{item.desc}</p>
                 </div>
               </FadeIn>
@@ -416,15 +488,16 @@ export default function Homepage({ onFileAnalyzed }) {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <div className="border-t border-[#E5E7EB]" />
+        <div className="h-px bg-gradient-to-r from-transparent via-[#2DC08D]/20 to-transparent" />
       </div>
 
-      <section className="py-12 bg-white">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <FadeIn>
-            <div className="text-center mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#0F1115]">Everything you need</h2>
-              <p className="text-sm text-[#5B6470] mt-1">AI-powered tools to land more interviews</p>
+            <div className="text-center mb-10">
+              <span className="text-[10px] font-semibold text-[#2DC08D] uppercase tracking-[0.2em]">Features</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#0F1115] mt-2">Everything you need</h2>
+              <p className="text-sm text-[#5B6470] mt-1.5">AI-powered tools to land more interviews</p>
             </div>
           </FadeIn>
           <div className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
@@ -434,11 +507,11 @@ export default function Homepage({ onFileAnalyzed }) {
               { icon: MessageSquare, title: "AI Coach", desc: "Ask anything about your resume and get instant, actionable advice." },
             ].map((item, i) => (
               <FadeIn key={item.title} delay={i * 0.1} y={16}>
-                <div className="rounded-xl border border-[#E5E7EB] bg-white p-5 hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
-                  <div className="w-9 h-9 rounded-full bg-[#2DC08D]/10 flex items-center justify-center mb-3">
-                    <item.icon className="w-4.5 h-4.5 text-[#2DC08D]" />
+                <div className="rounded-xl border border-[#E5E7EB] bg-white p-6 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 group">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2DC08D]/10 to-emerald-50 flex items-center justify-center mb-3 group-hover:from-[#2DC08D]/20 group-hover:to-emerald-100 transition-colors">
+                    <item.icon className="w-5 h-5 text-[#2DC08D]" />
                   </div>
-                  <h3 className="font-semibold text-[#0F1115] text-sm mb-1">{item.title}</h3>
+                  <h3 className="font-semibold text-[#0F1115] text-sm mb-1.5">{item.title}</h3>
                   <p className="text-xs text-[#5B6470] leading-relaxed">{item.desc}</p>
                 </div>
               </FadeIn>
@@ -447,13 +520,18 @@ export default function Homepage({ onFileAnalyzed }) {
         </div>
       </section>
 
-      <section className="py-10 bg-[#FAFAFA] border-t border-[#E5E7EB]">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 text-center">
+      <section className="relative py-16 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0F1115] via-[#1a1d23] to-[#0F1115]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#2DC08D]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 md:px-10 text-center relative">
           <FadeIn y={16}>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#0F1115]">Ready to optimize your resume?</h2>
-            <p className="text-sm text-[#5B6470] mt-1 mb-5">Join thousands of job seekers who landed more interviews with HireLens.</p>
+            <span className="text-[10px] font-semibold text-[#2DC08D] uppercase tracking-[0.2em]">Get Started</span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-2">Ready to optimize your resume?</h2>
+            <p className="text-sm text-[#9AA3AF] mt-1.5 mb-6 max-w-md mx-auto">Join thousands of job seekers who landed more interviews with HireLens.</p>
             <Button
               size="lg"
+              className="shadow-lg shadow-[#2DC08D]/25 hover:shadow-xl hover:shadow-[#2DC08D]/30 transition-shadow"
               onClick={() => navigate(user ? "/upload" : "/login")}
             >
               Get Started Free
@@ -481,6 +559,6 @@ export default function Homepage({ onFileAnalyzed }) {
           </div>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 }
