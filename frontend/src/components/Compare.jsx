@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { TrendingUp, Sparkles, FileText, CheckCircle2, ArrowRight, Loader2, Zap, ChevronDown } from "lucide-react";
+import { TrendingUp, Sparkles, FileText, CheckCircle2, ArrowRight, Loader2, Zap, ChevronDown, Download } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { invokeAgent, getResumes } from "../api";
+import ResumePreviewView from "./ResumePreviewView";
+import { exportApi } from "../api";
 
 export default function Compare() {
   const [resumes, setResumes] = useState([]);
@@ -14,6 +16,7 @@ export default function Compare() {
   const [originalScore, setOriginalScore] = useState(null);
   const [enhancedScore, setEnhancedScore] = useState(null);
   const [error, setError] = useState(null);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     getResumes()
@@ -70,6 +73,29 @@ export default function Compare() {
       setError("Enhancement failed. Please try again.");
     }
     setEnhancing(false);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!enhanced?.enhanced_text) return;
+    setDownloading(true);
+    try {
+      const res = await exportApi.resume({
+        content: enhanced.enhanced_text,
+        title: "AI-Enhanced-Resume",
+        format: "pdf",
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "AI-Enhanced-Resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      window.print();
+    }
+    setDownloading(false);
   };
 
   if (loadingResumes) {
@@ -141,16 +167,32 @@ export default function Compare() {
 
             <Card>
               <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    {enhanced ? <Sparkles className="w-4 h-4 text-[#2DC08D]" /> : <Zap className="w-4 h-4 text-slate-300" />}
-                    AI-Enhanced
-                  </CardTitle>
-                  {enhancedScore !== null && (
-                    <span className="text-sm font-bold text-green-600">{enhancedScore}<span className="text-xs font-normal text-slate-400">/100</span></span>
-                  )}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      {enhanced ? <Sparkles className="w-4 h-4 text-[#2DC08D]" /> : <Zap className="w-4 h-4 text-slate-300" />}
+                      AI-Enhanced
+                    </CardTitle>
+                    {!enhanced && <p className="text-xs text-slate-400 mt-1">Click "AI Enhance Resume" to generate</p>}
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {enhancedScore !== null && (
+                      <span className="text-sm font-bold text-green-600">{enhancedScore}<span className="text-xs font-normal text-slate-400">/100</span></span>
+                    )}
+                    {enhanced && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleDownloadPDF}
+                        disabled={downloading}
+                        className="gap-1.5"
+                      >
+                        {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                        {downloading ? "Downloading..." : "PDF"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                {!enhanced && <p className="text-xs text-slate-400">Click "AI Enhance Resume" to generate</p>}
               </CardHeader>
               <CardContent className="pt-0">
                 {enhancing ? (
@@ -159,8 +201,8 @@ export default function Compare() {
                     <p className="text-sm">AI is enhancing your resume...</p>
                   </div>
                 ) : enhanced ? (
-                  <div className="max-h-[500px] overflow-y-auto whitespace-pre-wrap text-xs text-slate-700 leading-relaxed font-mono bg-emerald-50 rounded-lg p-4 border border-emerald-200">
-                    {enhanced.enhanced_text}
+                  <div className="max-h-[600px] overflow-y-auto border border-slate-200 rounded-lg bg-white">
+                    <ResumePreviewView text={enhanced.enhanced_text} />
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-20 text-slate-300">
